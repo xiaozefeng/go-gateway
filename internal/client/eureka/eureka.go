@@ -2,67 +2,38 @@ package eureka
 
 import (
 	"encoding/json"
-	"io"
-	"log"
-	"net/http"
+	"errors"
+	"strings"
+
+	"github.com/go-gateway/internal/pkg/httputil"
 )
 
-func GetApps(url string) (*GetAppsResp, error) {
-	req, err := http.NewRequest("GET", url, nil)
+type Client struct {
+	URL string
+}
+
+func (c *Client) GetApps() (*GetAppsResp, error) {
+	url := c.URL + "/" + "apps"
+	b, err := httputil.Get(url, nil)
+	var res GetAppsResp
+	err = json.Unmarshal(b, &res)
+	return &res, err
+}
+
+func (c *Client) GetApp(appid string) (*GetAppResp, error) {
+	if len(appid) == 0 {
+		return nil, errors.New("appid must not null")
+	}
+	url := c.URL + "/apps/" + strings.ToUpper(appid)
+	b, err := httputil.Get(url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Accept", "application/json")
-
-	c := http.DefaultClient
-	response, err := c.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	body := response.Body
-	defer func(body io.ReadCloser) {
-		err := body.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(body)
-
-	content, err := io.ReadAll(body)
-	if err != nil {
-		return nil, err
-	}
-	var ans GetAppsResp
-	err = json.Unmarshal(content, &ans)
-	if err != nil {
-		return nil, err
-	}
-	return &ans, nil
+	var res GetAppResp
+	err = json.Unmarshal(b, &res)
+	return &res, err
 }
 
-func GetApp(appid string)   {
-
-}
-
-type GetAppResp struct {
-}
-
-type GetAppsResp struct {
-	Apps Apps `json:"applications"`
-}
-
-type Apps struct {
-	App []App `json:"application"`
-}
-
-type App struct {
-	Name     string     `json:"name"`
-	Instance []Instance `json:"instance"`
-}
-
-type Instance struct {
-	InstanceId string `json:"instanceId"`
-	HostName   string `json:"hostName"`
-	Host       string `json:"host"`
-	IpAddr     string `json:"ipAddr"`
-	Status     string `json:"status"`
+func NewClient(url string) *Client {
+	return &Client{URL: url}
 }

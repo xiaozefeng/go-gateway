@@ -1,1 +1,2 @@
 addr: :8080
+eureka_url: http://172.16.0.11:9100/eureka
