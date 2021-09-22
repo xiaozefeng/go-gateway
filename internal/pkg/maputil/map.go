@@ -1,8 +1,19 @@
 package maputil
 
-func MapStringSlice(origin[]string,  apply func (string)string)  []string{
+import "github.com/go-gateway/internal/client/eureka"
+
+
+func LoadBalance(instances []string) string {
+	if len(instances) > 0 {
+		return instances[0]
+	}
+	return ""
+}
+
+
+func MapToString(instances []eureka.Instance, apply func(eureka.Instance) string) []string {
 	var res []string
-	for _, v := range origin {
+	for _, v := range instances {
 		res = append(res, apply(v))
 	}
 	return res

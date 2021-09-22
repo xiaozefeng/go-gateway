@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-gateway/internal/api/middleware"
 	"github.com/go-gateway/internal/client/eureka"
+	"github.com/go-gateway/internal/pkg/maputil"
 	"github.com/spf13/viper"
 )
 
@@ -21,9 +22,6 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 	g.Use(middleware.Secure)
 	g.Use(mw...)
 
-	// g.NoRoute(func(c *gin.Context) {
-	// 	c.String(http.StatusNotFound, "the incorrect API route.")
-	// })
 
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
@@ -65,7 +63,7 @@ func findTarget(serviceId string) string {
 		log.Printf("err: %v\n", err)
 		return ""
 	}
-	return loadBalance(mapToString(app.App.Instance, func(instance eureka.Instance) string {
+	return maputil.LoadBalance(maputil.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		if instance.HomePageUrl != "" {
 			u, _:= url.Parse(instance.HomePageUrl)
 			return u.Host
@@ -74,20 +72,8 @@ func findTarget(serviceId string) string {
 	}))
 }
 
-func mapToString(instances []eureka.Instance, apply func(eureka.Instance) string) []string {
-	var res []string
-	for _, v := range instances {
-		res = append(res, apply(v))
-	}
-	return res
-}
 
-func loadBalance(instances []string) string {
-	if len(instances) > 0 {
-		return instances[0]
-	}
-	return ""
-}
+
 func detectService(path string) string {
 	if path == "" {
 		return path
