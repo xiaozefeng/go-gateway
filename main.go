@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-gateway/api"
 	"github.com/go-gateway/configs"
+	"github.com/go-gateway/internal/data/db"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -26,7 +27,14 @@ func init() {
 func main() {
 	err := configs.InitializeConfig(cfg)
 	if err != nil {
+		log.Println(err)
 		panic("load config failed")
+	}
+
+	err = db.Init()
+	if err != nil {
+		log.Println(err)
+		panic("init db failed")
 	}
 
 	router := gin.New()
@@ -58,6 +66,8 @@ func main() {
 		select {
 		case sig := <-done:
 			log.Println("sig:", sig)
+			// clean resources
+			db.Close()
 			cancel()
 		case <-errCtx.Done():
 			return errCtx.Err()

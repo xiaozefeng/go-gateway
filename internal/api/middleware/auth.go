@@ -7,13 +7,15 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-gateway/internal/biz"
 	"github.com/go-gateway/internal/client/member"
+	"github.com/go-gateway/internal/data/schema"
 )
 
 var (
 	TOKEN             = "token"
 	SOURCE_TYPE       = "sourceType"
-	SOURCE_TYPE_VALUE = "sourceTypeValye"
+	SOURCE_TYPE_VALUE = "sourceTypeValue"
 	MID               = "mid"
 	AUTH_TYPE         = "authType"
 	BRAND_CODE        = "brandCode"
@@ -38,20 +40,39 @@ func Login(c *gin.Context) {
 		if err != nil {
 			log.Printf("err: %v\n", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
-		}else {
-			c.Set(MID, memberId)
-			c.Set(SOURCE_TYPE , sourceType)
+		} else {
+			resetHeader(c)
+			h := c.Request.Header
+			h.Set(MID, fmt.Sprintf("%d", memberId))
+			h.Set(SOURCE_TYPE, sourceType)
 			c.Next()
 		}
-	}else {
+	} else {
 		c.Next()
 	}
-	
-
 }
 
-func checkIsNeedLogin(path, serviceId string) bool {	
+func resetHeader(c *gin.Context) {
+	h := c.Request.Header
+	h.Del(SOURCE_TYPE_VALUE)
+	h.Del(AUTH_TYPE)
+	h.Del(BRAND_CODE)
+	h.Del(PLATFORM_ID)
+	h.Del(TOKEN)
+}
+
+func checkIsNeedLogin(path, serviceId string) bool {
+	all, err := biz.ListAuthURL()
+	if err != nil {
+		log.Printf("list auth url happened error: %v\n", err)
+		return false
+	}
+	fmt.Printf("all: %v\n", all)
 	return true
+}
+
+func filterAuthURL(list []*schema.AuthURL, serviceId string) []*schema.AuthURL {
+	return nil
 }
 
 func checkToken(token, sourceType string) (int, error) {
