@@ -53,7 +53,7 @@ func Login(c *gin.Context) {
 }
 
 func checkIsNeedLogin(path, serviceId string) bool {	
-	return true
+	return false
 }
 
 func checkToken(token, sourceType string) (int, error) {
