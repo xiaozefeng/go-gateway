@@ -3,6 +3,7 @@ package member
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -47,6 +48,7 @@ func GetMember(token, sourceType string) (*GetMemberResp, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("b: %s\n", b)
 	var r GetMemberResp
 	err = member.Decode(b, &r)
 	if err != nil {

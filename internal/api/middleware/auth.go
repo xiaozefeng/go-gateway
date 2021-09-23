@@ -37,11 +37,12 @@ func Login(c *gin.Context) {
 	var needLogin = checkIsNeedLogin(path, serviceId)
 	if needLogin {
 		memberId, err := checkToken(token, sourceType)
+		fmt.Printf("memberId: %v\n", memberId)
 		if err != nil {
 			log.Printf("err: %v\n", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
 		} else {
-			resetHeader(c)
+			// resetHeader(c)
 			h := c.Request.Header
 			h.Set(MID, fmt.Sprintf("%d", memberId))
 			h.Set(SOURCE_TYPE, sourceType)
@@ -55,6 +56,7 @@ func Login(c *gin.Context) {
 func resetHeader(c *gin.Context) {
 	h := c.Request.Header
 	h.Del(SOURCE_TYPE_VALUE)
+	h.Del(MID)
 	h.Del(AUTH_TYPE)
 	h.Del(BRAND_CODE)
 	h.Del(PLATFORM_ID)
