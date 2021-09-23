@@ -20,8 +20,9 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 	g.Use(middleware.NoCache)
 	g.Use(middleware.Options)
 	g.Use(middleware.Secure)
+	g.Use(middleware.Login)
+	g.Use(gin.Logger())
 	g.Use(mw...)
-
 
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
@@ -39,11 +40,14 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 				realPath := getReverseProxyPath(path, serviceId)
 				fmt.Printf("realPath: %v\n", realPath)
 				r.URL.Path = realPath
-				for k, v := range c.Request.Header {
-					if v != nil && len(v) >= 1 {
-						r.Header.Set(k, v[0])
+				value, exists := c.Get("header")
+				if exists {
+					var m = value.(map[string]string)
+					for k, v := range m {
+						r.Header.Set(k, v)
 					}
 				}
+
 			},
 		}
 		proxy.ServeHTTP(c.Writer, c.Request)
@@ -65,14 +69,12 @@ func findTarget(serviceId string) string {
 	}
 	return maputil.LoadBalance(maputil.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		if instance.HomePageUrl != "" {
-			u, _:= url.Parse(instance.HomePageUrl)
+			u, _ := url.Parse(instance.HomePageUrl)
 			return u.Host
 		}
 		return ""
 	}))
 }
-
-
 
 func detectService(path string) string {
 	if path == "" {

@@ -2,10 +2,12 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-gateway/internal/client/member"
 )
 
 var (
@@ -34,24 +36,36 @@ func Login(c *gin.Context) {
 	if needLogin {
 		memberId, err := checkToken(token, sourceType)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 200, "resultMsg": "登录失败", "data": null})
+			log.Printf("err: %v\n", err)
+			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
 		}else {
-			c.Set(MID, memberId)
+			var m = make(map[string]string)
+			m[SOURCE_TYPE] = sourceType
+			m[MID] = fmt.Sprintf("%d", memberId)
+			c.Set("header", m)
+			c.Next()
 		}
+	}else {
+		c.Next()
 	}
-
-}
-
-func checkIsNeedLogin(path, serviceId string) bool {
 	
-	return false
+
 }
 
-func checkToken(token, sourceType string) (string, error) {
+func checkIsNeedLogin(path, serviceId string) bool {	
+	return true
+}
+
+func checkToken(token, sourceType string) (int, error) {
 	if token == "" || token == "null" || token == "undefined" {
-		return "", fmt.Errorf("invalid token: %s", token)
+		return -1, fmt.Errorf("invalid token: %s", token)
 	}
-	return "", nil
+	resp, err := member.GetMember(token, sourceType)
+	if err != nil {
+		return -1, err
+	}
+	log.Printf("resp: %v\n", resp)
+	return resp.MemberId, nil
 }
 
 func getServiceId(path string) string {
