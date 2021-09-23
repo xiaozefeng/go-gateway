@@ -67,12 +67,26 @@ func checkIsNeedLogin(path, serviceId string) bool {
 		log.Printf("list auth url happened error: %v\n", err)
 		return false
 	}
-	fmt.Printf("all: %v\n", all)
-	return true
+	filtered := filterAuthURL(all, func(au *schema.AuthURL) bool {
+		var serviceIdIsEq = strings.ToLower(serviceId) == strings.ToLower(au.ServiceId)
+		var mathcedPath = au.Url == getReverseProxyPath(path, serviceId)
+		return serviceIdIsEq && mathcedPath
+	})
+	return len(filtered) > 0
 }
 
-func filterAuthURL(list []*schema.AuthURL, serviceId string) []*schema.AuthURL {
-	return nil
+func getReverseProxyPath(path, serviceId string) string {
+	return path[strings.Index(path, serviceId)+len(serviceId):]
+}
+
+func filterAuthURL(list []*schema.AuthURL, filter func(*schema.AuthURL) bool) []*schema.AuthURL {
+	var res []*schema.AuthURL
+	for _, l := range list {
+		if filter(l) {
+			res = append(res, l)
+		}
+	}
+	return res
 }
 
 func checkToken(token, sourceType string) (int, error) {

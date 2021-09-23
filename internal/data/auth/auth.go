@@ -16,12 +16,12 @@ func (authRepo *AuthURLRepo) ListAuthURL() ([]*schema.AuthURL, error) {
 	}
 	var v []*schema.AuthURL
 	for rows.Next() {
-		var r *schema.AuthURL
+		var r schema.AuthURL
 		err = rows.Scan(&r.ServiceId, &r.Url, &r.ForceAuth, &r.Prefix)
 		if err != nil {
 			return nil, err
 		}
-		v = append(v, r)
+		v = append(v, &r)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err

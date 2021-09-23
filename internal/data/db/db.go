@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 )
 
