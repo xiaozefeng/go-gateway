@@ -39,10 +39,8 @@ func Login(c *gin.Context) {
 			log.Printf("err: %v\n", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
 		}else {
-			var m = make(map[string]string)
-			m[SOURCE_TYPE] = sourceType
-			m[MID] = fmt.Sprintf("%d", memberId)
-			c.Set("header", m)
+			c.Set(MID, memberId)
+			c.Set(SOURCE_TYPE , sourceType)
 			c.Next()
 		}
 	}else {
@@ -53,7 +51,7 @@ func Login(c *gin.Context) {
 }
 
 func checkIsNeedLogin(path, serviceId string) bool {	
-	return false
+	return true
 }
 
 func checkToken(token, sourceType string) (int, error) {

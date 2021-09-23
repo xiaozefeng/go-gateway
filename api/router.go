@@ -40,14 +40,12 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 				realPath := getReverseProxyPath(path, serviceId)
 				fmt.Printf("realPath: %v\n", realPath)
 				r.URL.Path = realPath
-				value, exists := c.Get("header")
-				if exists {
-					var m = value.(map[string]string)
-					for k, v := range m {
-						r.Header.Set(k, v)
-					}
-				}
-
+				value := c.GetInt("mid")
+				fmt.Printf("value: %v\n", value)
+				s := c.GetString("sourceType")
+				fmt.Printf("s: %v\n", s)
+				r.Header.Set("mid", fmt.Sprintf("%d", value))
+				r.Header.Set("sourceType", s)
 			},
 		}
 		proxy.ServeHTTP(c.Writer, c.Request)
