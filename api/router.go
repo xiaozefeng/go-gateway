@@ -29,7 +29,7 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 		log.Printf("path: %v\n", path)
 
 		serviceId := detectService(path)
-		log.Printf("service: %v\n", serviceId)
+		log.Printf("serviceId: %v\n", serviceId)
 		var target = findTarget(serviceId)
 		log.Println("target:", target)
 
@@ -50,7 +50,7 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 
 func findTarget(serviceId string) string {
 	var eurekURL = viper.GetString("eureka_url")
-	fmt.Printf("eurekURL: %v\n", eurekURL)
+	// fmt.Printf("eurekURL: %v\n", eurekURL)
 	var eurekaClient = eureka.NewClient(eurekURL)
 	if serviceId == "" {
 		return ""
