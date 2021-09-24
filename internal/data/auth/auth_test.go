@@ -3,9 +3,10 @@ package auth
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"testing"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/go-gateway/internal/data/schema"
 	_ "github.com/go-sql-driver/mysql"

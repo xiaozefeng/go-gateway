@@ -1,5 +1,8 @@
 addr: :9200
 eureka_url: http://172.16.0.5:9100/eureka
+runmode: release
+log:
+  path: ./gateway.log
 
 db:
   user: u_jd_test

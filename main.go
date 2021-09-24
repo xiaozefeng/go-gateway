@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-gateway/api"
 	"github.com/go-gateway/configs"
 	"github.com/go-gateway/internal/data/db"
+	"github.com/go-gateway/logs"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -31,12 +33,18 @@ func main() {
 		panic("load config failed")
 	}
 
+	err = logs.InitLog(viper.GetString("log.path"))
+	if err != nil {
+		panic("init logging failed")
+	}
+
 	err = db.Init()
 	if err != nil {
 		log.Println(err)
 		panic("init db failed")
 	}
 
+	gin.SetMode(viper.GetString("runmode"))
 	router := gin.New()
 	var handlers []gin.HandlerFunc
 	api.InitializeRouter(router, handlers...)

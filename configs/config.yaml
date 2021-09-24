@@ -1,5 +1,8 @@
 addr: :8080
 eureka_url: http://172.16.0.11:9100/eureka
+runmode: debug
+log:
+  path: ./gateway.log
 
 db:
   user: u_super_hero
