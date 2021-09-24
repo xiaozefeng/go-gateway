@@ -3,9 +3,10 @@ package member
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/go-gateway/internal/client/eureka"
 	"github.com/go-gateway/internal/pkg/maputil"
@@ -48,7 +49,7 @@ func GetMember(token, sourceType string) (*GetMemberResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("b: %s\n", b)
+	log.Infof("get member result: %s", b)
 	var r GetMemberResp
 	err = member.Decode(b, &r)
 	if err != nil {

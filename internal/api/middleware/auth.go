@@ -38,9 +38,9 @@ func Login(c *gin.Context) {
 	var needLogin = checkIsNeedLogin(path, serviceId)
 	if needLogin {
 		memberId, err := checkToken(token, sourceType)
-		fmt.Printf("memberId: %v\n", memberId)
+		log.Infof("memberId: %v", memberId)
 		if err != nil {
-			log.Printf("err: %v\n", err)
+			log.Errorf("check token happened err: %v", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
 		} else {
 			// resetHeader(c)
@@ -67,7 +67,7 @@ func resetHeader(c *gin.Context) {
 func checkIsNeedLogin(path, serviceId string) bool {
 	all, err := biz.ListAuthURL()
 	if err != nil {
-		log.Printf("list auth url happened error: %v\n", err)
+		log.Errorf("list auth url happened error: %v", err)
 		return false
 	}
 	filtered := filterAuthURL(all, func(au *schema.AuthURL) bool {
@@ -100,7 +100,6 @@ func checkToken(token, sourceType string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	log.Printf("resp: %v\n", resp)
 	return resp.MemberId, nil
 }
 

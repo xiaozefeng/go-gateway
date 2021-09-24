@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -27,21 +26,21 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
-		log.Printf("path: %v\n", path)
+		log.Infof("path: %v", path)
 
 		serviceId := detectService(path)
-		log.Printf("serviceId: %v\n", serviceId)
+		log.Infof("serviceId: %v", serviceId)
 		var target = findTarget(serviceId)
-		log.Println("target:", target)
+		log.Infof("target: %s", target)
 
 		proxy := httputil.ReverseProxy{
 			Director: func(r *http.Request) {
 				r.URL.Scheme = "http"
 				r.URL.Host = target
 				realPath := getReverseProxyPath(path, serviceId)
-				fmt.Printf("realPath: %v\n", realPath)
+				log.Infof("realPath: %v", realPath)
 				r.URL.Path = realPath
-				fmt.Printf("r.Header: %v\n", r.Header)
+				log.Infof("r.Header: %v", r.Header)
 			},
 		}
 		proxy.ServeHTTP(c.Writer, c.Request)
@@ -51,14 +50,13 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 
 func findTarget(serviceId string) string {
 	var eurekURL = viper.GetString("eureka_url")
-	// fmt.Printf("eurekURL: %v\n", eurekURL)
 	var eurekaClient = eureka.NewClient(eurekURL)
 	if serviceId == "" {
 		return ""
 	}
 	app, err := eurekaClient.GetApp(strings.ToUpper(serviceId))
 	if err != nil {
-		log.Printf("err: %v\n", err)
+		log.Errorf("get service id failed, err: %v", err)
 		return ""
 	}
 	return maputil.LoadBalance(maputil.MapToString(app.App.Instance, func(instance eureka.Instance) string {

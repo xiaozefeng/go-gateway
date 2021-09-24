@@ -64,7 +64,7 @@ func main() {
 	})
 
 	g.Go(func() error {
-		log.Printf("starting http server at address: %s\n", viper.GetString("addr"))
+		log.Infof("starting http server at address: %s", viper.GetString("addr"))
 		return srv.ListenAndServe()
 	})
 
@@ -84,6 +84,6 @@ func main() {
 	})
 
 	if err := g.Wait(); err != nil {
-		log.Printf("group err: %v\n", err)
+		log.Infof("group err: %v", err)
 	}
 }
