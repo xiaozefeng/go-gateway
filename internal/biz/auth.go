@@ -1,6 +1,8 @@
 package biz
 
 import (
+	"strings"
+
 	"github.com/go-gateway/internal/data/auth"
 	"github.com/go-gateway/internal/data/schema"
 )
@@ -31,8 +33,11 @@ func ListAuthURL() (map[string][]*schema.AuthURL, error) {
 func convert(list []*schema.AuthURL) (map[string][]*schema.AuthURL, error) {
 	var result = make(map[string][]*schema.AuthURL)
 	for _, au := range list {
-		auList := result[au.ServiceId]
-		auList = append(auList, au)
+		if v, ok := result[strings.Trim(au.ServiceId, " ")]; ok {
+			v = append(v, au)
+		} else {
+			result[strings.Trim(au.ServiceId, " ")] = make([]*schema.AuthURL, 0)
+		}
 	}
 	return result, nil
 }
