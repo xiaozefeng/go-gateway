@@ -41,7 +41,7 @@ func Login(c *gin.Context) {
 		log.Infof("memberId: %v", memberId)
 		if err != nil {
 			log.Errorf("check token happened err: %v", err)
-			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "鉴权失败", "data": nil})
+			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 440, "resultMsg": "鉴权失败", "data": nil})
 		} else {
 			// resetHeader(c)
 			h := c.Request.Header
