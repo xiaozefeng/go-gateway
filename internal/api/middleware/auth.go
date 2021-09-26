@@ -75,7 +75,12 @@ func checkIsNeedLogin(path, serviceId string) bool {
 		var mathcedPath = au.Url == getReverseProxyPath(path, serviceId)
 		return serviceIdIsEq && mathcedPath
 	})
-	return len(filtered) > 0
+
+	if len(filtered) == 0 {
+		return false
+	}
+	first := filtered[0]
+	return first.ForceAuth == 1
 }
 
 func getReverseProxyPath(path, serviceId string) string {
