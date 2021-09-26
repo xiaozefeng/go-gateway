@@ -31,8 +31,11 @@ func ListAuthURL() (map[string][]*schema.AuthURL, error) {
 func convert(list []*schema.AuthURL) (map[string][]*schema.AuthURL, error) {
 	var result = make(map[string][]*schema.AuthURL)
 	for _, au := range list {
-		v, _ := result[au.ServiceId]
-		v = append(v, au)
+		if v, ok := result[au.ServiceId]; ok {
+			v = append(v, au)
+		} else {
+			result[au.ServiceId] = make([]*schema.AuthURL, 0)
+		}
 	}
 	return result, nil
 }
