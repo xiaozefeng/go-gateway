@@ -71,12 +71,17 @@ func resetHeader(c *gin.Context) {
 }
 
 func checkIsNeedLogin(path, serviceId string) bool {
-	all, err := biz.ListAuthURL()
+	m, err := biz.ListAuthURL()
 	if err != nil {
 		log.Errorf("list auth url happened error: %v", err)
 		return false
 	}
-	filtered := filterAuthURL(all, func(au *schema.AuthURL) bool {
+	v, ok := m[serviceId]
+	if !ok {
+		log.Errorf("service id :%s can not find any url", serviceId)
+		return false
+	}
+	filtered := filterAuthURL(v, func(au *schema.AuthURL) bool {
 		var serviceIdIsEq = strings.ToLower(serviceId) == strings.ToLower(au.ServiceId)
 		var mathcedPath = au.Url == getReverseProxyPath(path, serviceId)
 		return serviceIdIsEq && mathcedPath

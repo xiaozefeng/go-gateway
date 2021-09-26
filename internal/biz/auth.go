@@ -9,14 +9,30 @@ type AuthService interface {
 	ListAuthURL() ([]*schema.AuthURL, error)
 }
 
-var authSerice AuthService  = &auth.AuthURLRepo{}
+var authSerice AuthService = &auth.AuthURLRepo{}
 
-var cache []*schema.AuthURL
+// var cache []*schema.AuthURL
 
-func ListAuthURL() ([]*schema.AuthURL, error) {
+var cache map[string][]*schema.AuthURL
+
+func ListAuthURL() (map[string][]*schema.AuthURL, error) {
 	if cache != nil {
 		return cache, nil
 	}
-	cache, err := authSerice.ListAuthURL()
+	list, err := authSerice.ListAuthURL()
+	if err != nil {
+		return nil, err
+	}
+
+	cache, err := convert(list)
 	return cache, err
+}
+
+func convert(list []*schema.AuthURL) (map[string][]*schema.AuthURL, error) {
+	var result = make(map[string][]*schema.AuthURL)
+	for _, au := range list {
+		v, _ := result[au.ServiceId]
+		v = append(v, au)
+	}
+	return result, nil
 }
