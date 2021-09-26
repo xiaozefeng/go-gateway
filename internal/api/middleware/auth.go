@@ -35,23 +35,29 @@ func Login(c *gin.Context) {
 	// brandCode:= c.Request.Header.Get(BRAND_CODE)
 	// platformId:= c.Request.Header.Get(PLATFORM_ID)
 
+	memberId, err := checkToken(token, sourceType)
+	log.Infof("memberId: %v", memberId)
+
 	var needLogin = checkIsNeedLogin(path, serviceId)
 	if needLogin {
-		memberId, err := checkToken(token, sourceType)
-		log.Infof("memberId: %v", memberId)
 		if err != nil {
 			log.Errorf("check token happened err: %v", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 440, "resultMsg": "鉴权失败", "data": nil})
 		} else {
 			// resetHeader(c)
-			h := c.Request.Header
-			h.Set(MID, fmt.Sprintf("%d", memberId))
-			h.Set(SOURCE_TYPE, sourceType)
+			setHeader(c, memberId, sourceType)
 			c.Next()
 		}
 	} else {
+		setHeader(c, memberId, sourceType)
 		c.Next()
 	}
+}
+
+func setHeader(c *gin.Context, memberId int, sourceType string) {
+	h := c.Request.Header
+	h.Set(MID, fmt.Sprintf("%d", memberId))
+	h.Set(SOURCE_TYPE, sourceType)
 }
 
 func resetHeader(c *gin.Context) {
