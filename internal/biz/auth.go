@@ -34,7 +34,7 @@ func convert(list []*schema.AuthURL) (map[string][]*schema.AuthURL, error) {
 		if v, ok := result[au.ServiceId]; ok {
 			v = append(v, au)
 		} else {
-			result[au.ServiceId] = make([]*schema.AuthURL, 0)
+			v= make([]*schema.AuthURL, 0)
 		}
 	}
 	return result, nil
