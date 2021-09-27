@@ -9,19 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/api/middleware"
 	"github.com/go-gateway/internal/client/eureka"
 	"github.com/go-gateway/internal/pkg/maputil"
 	"github.com/spf13/viper"
 )
 
 func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
-	g.Use(gin.Recovery())
-	g.Use(middleware.NoCache)
-	g.Use(middleware.Options)
-	g.Use(middleware.Secure)
-	g.Use(middleware.Login)
-	g.Use(gin.Logger())
 	g.Use(mw...)
 
 	g.Any("/*action", func(c *gin.Context) {

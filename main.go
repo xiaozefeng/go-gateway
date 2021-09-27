@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-gateway/api"
 	"github.com/go-gateway/configs"
+	"github.com/go-gateway/internal/api/middleware"
 	"github.com/go-gateway/internal/data/db"
 	"github.com/go-gateway/logs"
 	"github.com/spf13/viper"
@@ -47,6 +48,13 @@ func main() {
 	gin.SetMode(viper.GetString("runmode"))
 	router := gin.New()
 	var handlers []gin.HandlerFunc
+	handlers = append(handlers,gin.Recovery() )
+	handlers = append(handlers,middleware.NoCache)
+	handlers = append(handlers,middleware.Options)
+	handlers = append(handlers,middleware.Secure)
+	handlers = append(handlers,middleware.Login)
+	handlers = append(handlers,gin.Logger() )
+
 	api.InitializeRouter(router, handlers...)
 
 	srv := &http.Server{
