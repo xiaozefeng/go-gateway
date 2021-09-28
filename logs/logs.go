@@ -11,7 +11,7 @@ func InitLog(path string) error{
 	if err != nil {
 		return err
 	}
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.TextFormatter{})
 	log.SetOutput(f)
 	return nil
 }
