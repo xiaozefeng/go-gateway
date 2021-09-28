@@ -13,7 +13,6 @@ type AuthService interface {
 
 var authSerice AuthService = &auth.AuthURLRepo{}
 
-// var cache []*schema.AuthURL
 
 var cache map[string][]*schema.AuthURL
 

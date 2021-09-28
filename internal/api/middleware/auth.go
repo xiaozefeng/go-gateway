@@ -29,11 +29,6 @@ func Login(c *gin.Context) {
 
 	token := c.Request.Header.Get(TOKEN)
 	sourceType := c.Request.Header.Get(SOURCE_TYPE)
-	// sourceTypeValue:= c.Request.Header.Get(SOURCE_TYPE_VALUE)
-	// mid := c.Request.Header.Get(MID)
-	// authType:= c.Request.Header.Get(AUTH_TYPE)
-	// brandCode:= c.Request.Header.Get(BRAND_CODE)
-	// platformId:= c.Request.Header.Get(PLATFORM_ID)
 
 	memberId, err := checkToken(token, sourceType)
 	log.Infof("memberId: %v", memberId)
@@ -44,7 +39,6 @@ func Login(c *gin.Context) {
 			log.Errorf("check token happened err: %v", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 440, "resultMsg": "鉴权失败", "data": nil})
 		} else {
-			// resetHeader(c)
 			setHeader(c, memberId, sourceType)
 			c.Next()
 		}
@@ -58,16 +52,6 @@ func setHeader(c *gin.Context, memberId int, sourceType string) {
 	h := c.Request.Header
 	h.Set(MID, fmt.Sprintf("%d", memberId))
 	h.Set(SOURCE_TYPE, sourceType)
-}
-
-func resetHeader(c *gin.Context) {
-	h := c.Request.Header
-	h.Del(SOURCE_TYPE_VALUE)
-	h.Del(MID)
-	h.Del(AUTH_TYPE)
-	h.Del(BRAND_CODE)
-	h.Del(PLATFORM_ID)
-	h.Del(TOKEN)
 }
 
 func checkIsNeedLogin(path, serviceId string) bool {
