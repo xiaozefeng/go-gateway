@@ -35,6 +35,11 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 				r.URL.Path = realPath
 				log.Infof("r.Header: %v", r.Header)
 			},
+			ErrorHandler: func(rw http.ResponseWriter, r *http.Request, err error) {
+				if err != nil {
+					c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 500, "resultMsg": "出错了，请一会再试", "data": nil})
+				}
+			},
 		}
 		proxy.ServeHTTP(c.Writer, c.Request)
 	})
