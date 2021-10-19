@@ -5,8 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/go-gateway/internal/app/gateway/biz"
-	"github.com/go-gateway/internal/app/gateway/data/schema"
+	"github.com/go-gateway/internal/app/gateway/biz/domain"
 	"github.com/go-gateway/internal/pkg/client/eureka"
 	"github.com/go-gateway/internal/pkg/client/member"
 	"github.com/go-gateway/internal/pkg/router/svc"
@@ -15,8 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type AuthService struct {
-}
+type AuthService struct{}
 
 func NewAuthService() svc.AuthService {
 	return &AuthService{}
@@ -69,13 +67,16 @@ func getReverseProxyPath(path, serviceId string) string {
 	return path[strings.Index(path, serviceId)+len(serviceId):]
 }
 
-
-type TokenService struct {
-
+type BizAuthService interface {
+	ListAuthURL() (map[string][]*domain.AuthURL, error)
 }
 
-func NewTokenService() svc.TokenService {
-	return &TokenService{}
+type TokenService struct {
+	BizAuthService
+}
+
+func NewTokenService(ba BizAuthService) svc.TokenService {
+	return &TokenService{ba}
 }
 
 func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err error) {
@@ -89,7 +90,7 @@ func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err 
 	return resp.MemberId, nil
 }
 func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
-	m, err := biz.ListAuthURL()
+	m, err := ts.ListAuthURL()
 	if err != nil {
 		logrus.Errorf("list auth url happened error: %v", err)
 		return false
@@ -99,7 +100,7 @@ func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
 		logrus.Errorf("service id :%s can not find any url", serviceId)
 		return false
 	}
-	filtered := filterAuthURL(v, func(au *schema.AuthURL) bool {
+	filtered := filterAuthURL(v, func(au *domain.AuthURL) bool {
 		var serviceIdIsEq = strings.ToLower(serviceId) == strings.ToLower(au.ServiceId)
 		var mathcedPath = au.Url == getReverseProxyPath(path, serviceId)
 		return serviceIdIsEq && mathcedPath
@@ -108,12 +109,11 @@ func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
 	if len(filtered) == 0 {
 		return false
 	}
-	first := filtered[0]
-	return first.ForceAuth == 1
+	return filtered[0].IsForeLogin()
 }
 
-func filterAuthURL(list []*schema.AuthURL, filter func(*schema.AuthURL) bool) []*schema.AuthURL {
-	var res []*schema.AuthURL
+func filterAuthURL(list []*domain.AuthURL, filter func(*domain.AuthURL) bool) []*domain.AuthURL{
+	var res []*domain.AuthURL
 	for _, l := range list {
 		if filter(l) {
 			res = append(res, l)

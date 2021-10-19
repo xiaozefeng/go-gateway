@@ -33,6 +33,10 @@ func Init() error {
 	return nil
 }
 
+func GetDB()  *sql.DB{
+	return DB
+}
+
 func getDataSource(url string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", url)
 	if err != nil {

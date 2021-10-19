@@ -3,39 +3,37 @@ package biz
 import (
 	"strings"
 
-	"github.com/go-gateway/internal/app/gateway/data/auth"
-	"github.com/go-gateway/internal/app/gateway/data/schema"
+	"github.com/go-gateway/internal/app/gateway/biz/domain"
+	"github.com/go-gateway/internal/app/gateway/service/auth"
 )
 
-type AuthService interface {
-	ListAuthURL() ([]*schema.AuthURL, error)
+type AuthRepo interface {
+	List() ([]*domain.AuthURL, error)
 }
 
-var authSerice AuthService = &auth.AuthURLRepo{}
+type AuthUsercase struct {
+	AuthRepo
+}
 
+func NewBizUserService(repo AuthRepo) auth.BizAuthService {
+	return &AuthUsercase{repo}
+}
 
-var cache map[string][]*schema.AuthURL
-
-func ListAuthURL() (map[string][]*schema.AuthURL, error) {
-	if cache != nil {
-		return cache, nil
-	}
-	list, err := authSerice.ListAuthURL()
+func (au *AuthUsercase) ListAuthURL() (map[string][]*domain.AuthURL, error) {
+	result, err := au.List()
 	if err != nil {
 		return nil, err
 	}
-
-	cache, err := convert(list)
-	return cache, err
+	return convert(result)
 }
 
-func convert(list []*schema.AuthURL) (map[string][]*schema.AuthURL, error) {
-	var result = make(map[string][]*schema.AuthURL)
+func convert(list []*domain.AuthURL) (map[string][]*domain.AuthURL, error) {
+	var result = make(map[string][]*domain.AuthURL)
 	for _, au := range list {
 		if v, ok := result[strings.Trim(au.ServiceId, " ")]; ok {
 			v = append(v, au)
 		} else {
-			result[strings.Trim(au.ServiceId, " ")] = make([]*schema.AuthURL, 0)
+			result[strings.Trim(au.ServiceId, " ")] = make([]*domain.AuthURL, 0)
 		}
 	}
 	return result, nil
