@@ -11,7 +11,7 @@ generate:
 run: build 
 	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
 
-start: build stop
+start: build
 	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
 
 stop:
