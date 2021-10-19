@@ -8,14 +8,14 @@ package app
 
 import (
 	"github.com/go-gateway/internal/app/gateway/service/auth"
-	"github.com/go-gateway/internal/pkg/router/model"
+	"github.com/go-gateway/internal/pkg/router/svc"
 )
 
 // Injectors from wire.go:
 
-func InitRouterService() *model.RouterService {
+func InitRouterService() *svc.RouterService {
 	authService := auth.NewAuthService()
 	tokenService := auth.NewTokenService()
-	routerService := model.NewRouterService(authService, tokenService)
+	routerService := svc.NewRouterService(authService, tokenService)
 	return routerService
 }

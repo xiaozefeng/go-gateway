@@ -1,4 +1,4 @@
-package model
+package svc
 
 type AuthService interface {
 	DetectedService(path string) string
