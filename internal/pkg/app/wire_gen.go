@@ -9,6 +9,7 @@ package app
 import (
 	"github.com/go-gateway/internal/app/gateway/biz"
 	auth2 "github.com/go-gateway/internal/app/gateway/data/auth"
+	"github.com/go-gateway/internal/app/gateway/data/db"
 	"github.com/go-gateway/internal/app/gateway/service/auth"
 	"github.com/go-gateway/internal/pkg/router/svc"
 )
@@ -17,7 +18,8 @@ import (
 
 func InitRouterService() *svc.RouterService {
 	authService := auth.NewAuthService()
-	authRepo := auth2.NewAuthURLRepo()
+	sqlDB := db.GetDB()
+	authRepo := auth2.NewAuthURLRepo(sqlDB)
 	bizAuthService := biz.NewBizUserService(authRepo)
 	tokenService := auth.NewTokenService(bizAuthService)
 	routerService := svc.NewRouterService(authService, tokenService)

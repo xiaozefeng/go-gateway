@@ -1,22 +1,30 @@
 package auth
 
 import (
+	"database/sql"
+
 	"github.com/go-gateway/internal/app/gateway/biz"
 	"github.com/go-gateway/internal/app/gateway/biz/domain"
-	"github.com/go-gateway/internal/app/gateway/data/db"
 	"github.com/go-gateway/internal/app/gateway/data/schema"
+	"github.com/sirupsen/logrus"
 )
 
 type AuthURLRepo struct {
-	// *sql.DB
+	*sql.DB
 }
 
-func NewAuthURLRepo () biz.AuthRepo {
-	return &AuthURLRepo{}
+func NewAuthURLRepo(db *sql.DB) biz.AuthRepo {
+	return &AuthURLRepo{db}
 }
+
+var cache []*domain.AuthURL
 
 func (repo *AuthURLRepo) List() ([]*domain.AuthURL, error) {
-	rows, err := db.DB.Query("select service_id, url, force_auth, prefix from auth_url")
+	if cache != nil {
+		logrus.Info("命中缓存")
+		return cache, nil
+	}
+	rows, err := repo.Query("select service_id, url, force_auth, prefix from auth_url")
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +41,8 @@ func (repo *AuthURLRepo) List() ([]*domain.AuthURL, error) {
 		return nil, err
 	}
 
-	return convert(list), nil
+	cache = convert(list)
+	return cache, nil
 }
 
 func convert(list []*schema.AuthURL) []*domain.AuthURL {
