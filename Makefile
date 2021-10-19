@@ -9,7 +9,7 @@ generate:
 	cd internal/pkg/app && wire
 
 run: build 
-	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
+	./cmd/gateway/gateway -c ./conf/tk.yaml
 
 start: build
 	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
