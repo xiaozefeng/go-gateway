@@ -1,23 +1,22 @@
 package auth
 
 import (
-	"database/sql"
-
 	"github.com/go-gateway/internal/app/gateway/biz"
 	"github.com/go-gateway/internal/app/gateway/biz/domain"
+	"github.com/go-gateway/internal/app/gateway/data/db"
 	"github.com/go-gateway/internal/app/gateway/data/schema"
 )
 
 type AuthURLRepo struct {
-	*sql.DB
+	// *sql.DB
 }
 
-func NewAuthURLRepo (db *sql.DB) biz.AuthRepo {
-	return &AuthURLRepo{db}
+func NewAuthURLRepo () biz.AuthRepo {
+	return &AuthURLRepo{}
 }
 
 func (repo *AuthURLRepo) List() ([]*domain.AuthURL, error) {
-	rows, err := repo.Query("select service_id, url, force_auth, prefix from auth_url")
+	rows, err := db.DB.Query("select service_id, url, force_auth, prefix from auth_url")
 	if err != nil {
 		return nil, err
 	}
