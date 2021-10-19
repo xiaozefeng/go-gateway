@@ -13,7 +13,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitAuthService() *model.RouterService {
+func InitRouterService() *model.RouterService {
 	authService := auth.NewAuthService()
 	tokenService := auth.NewTokenService()
 	routerService := model.NewRouterService(authService, tokenService)

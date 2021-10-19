@@ -5,13 +5,12 @@ import (
 	"net/http/httputil"
 
 	"github.com/go-gateway/internal/pkg/app"
-	"github.com/go-gateway/internal/pkg/router/model"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
 
-var svc *model.RouterService = app.InitAuthService()
+var svc  = app.GetRouterService()
 
 func Init(g *gin.Engine, mw ...gin.HandlerFunc ) {
 	g.Use(mw...)

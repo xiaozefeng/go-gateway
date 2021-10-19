@@ -8,7 +8,8 @@ import (
 	"github.com/go-gateway/internal/pkg/router/model"
 	"github.com/google/wire"
 )
-func InitAuthService() *model.RouterService {
+func InitRouterService() *model.RouterService {
 	wire.Build(model.NewRouterService, auth.NewAuthService, auth.NewTokenService)
 	return &model.RouterService{}
 }
+

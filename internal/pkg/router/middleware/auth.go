@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-gateway/internal/pkg/app"
-	"github.com/go-gateway/internal/pkg/router/model"
 )
 
 var (
@@ -21,7 +20,7 @@ var (
 	PLATFORM_ID       = "platformId"
 )
 
-var svc *model.RouterService = app.InitAuthService()
+var svc = app.GetRouterService()
 
 func Login(c *gin.Context) {
 	path := c.Request.URL.Path

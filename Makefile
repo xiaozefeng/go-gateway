@@ -1,5 +1,6 @@
 clean:
 	rm -f cmd/gateway/gateway
+	rm -f gateway.log
 
 build: clean generate
 	cd cmd/gateway && go build -v .
