@@ -8,8 +8,11 @@ build: clean generate
 generate:
 	cd internal/pkg/app && wire
 
-run: build
+start: build kill
 	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
+
+kill:
+	ps -ef |grep gateway |grep -v grep  | awk '{print $2}' |xargs kill -9
 
 try: build
 	./cmd/gateway/gateway  -c ./conf/config.yaml
