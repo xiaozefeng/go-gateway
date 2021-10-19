@@ -11,11 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/api/middleware"
 	"github.com/go-gateway/internal/app/gateway/data/db"
 	"github.com/go-gateway/internal/pkg/configs"
 	"github.com/go-gateway/internal/pkg/logs"
 	"github.com/go-gateway/internal/pkg/router"
+	"github.com/go-gateway/internal/pkg/router/middleware"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -48,14 +48,15 @@ func main() {
 	gin.SetMode(viper.GetString("runmode"))
 	engine := gin.New()
 	var handlers []gin.HandlerFunc
-	handlers = append(handlers,gin.Recovery() )
-	handlers = append(handlers,middleware.NoCache)
-	handlers = append(handlers,middleware.Options)
-	handlers = append(handlers,middleware.Secure)
-	handlers = append(handlers,middleware.Login)
-	handlers = append(handlers,gin.Logger() )
+	handlers = append(handlers, gin.Recovery())
+	handlers = append(handlers, middleware.NoCache)
+	handlers = append(handlers, middleware.Options)
+	handlers = append(handlers, middleware.Secure)
+	handlers = append(handlers, middleware.Login)
+	handlers = append(handlers, gin.Logger())
 
-	router.InitializeRouter(engine, handlers...)
+	// svc := app.InitAuthService()
+	router.Init(engine, handlers...)
 
 	srv := &http.Server{
 		Addr:    viper.GetString("addr"),

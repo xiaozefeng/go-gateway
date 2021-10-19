@@ -1,4 +1,4 @@
-package member
+package decode
 
 import (
 	"encoding/json"

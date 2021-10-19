@@ -1,4 +1,4 @@
-package maputil
+package util
 
 import "github.com/go-gateway/internal/pkg/client/eureka"
 

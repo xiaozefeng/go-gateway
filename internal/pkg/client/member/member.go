@@ -9,8 +9,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/go-gateway/internal/pkg/client/eureka"
-	"github.com/go-gateway/internal/pkg/maputil"
-	"github.com/go-gateway/internal/pkg/seri/member"
+	"github.com/go-gateway/internal/pkg/client/member/decode"
+	"github.com/go-gateway/internal/pkg/util"
 	"github.com/spf13/viper"
 )
 
@@ -32,7 +32,7 @@ func GetMember(token, sourceType string) (*GetMemberResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	choosed := maputil.LoadBalance(maputil.MapToString(app.App.Instance, func(instance eureka.Instance) string {
+	choosed := util.LoadBalance(util.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		return instance.HomePageUrl
 	}))
 	var getMemberReq = GetMemberReq{
@@ -51,7 +51,7 @@ func GetMember(token, sourceType string) (*GetMemberResp, error) {
 	}
 	log.Infof("get member result: %s", b)
 	var r GetMemberResp
-	err = member.Decode(b, &r)
+	err = decode.Decode(b, &r)
 	if err != nil {
 		return nil, err
 	}

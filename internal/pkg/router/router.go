@@ -3,34 +3,33 @@ package router
 import (
 	"net/http"
 	"net/http/httputil"
-	"net/url"
-	"strings"
 
+	"github.com/go-gateway/internal/pkg/app"
+	"github.com/go-gateway/internal/pkg/router/model"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/pkg/client/eureka"
-	"github.com/go-gateway/internal/pkg/maputil"
-	"github.com/spf13/viper"
 )
 
-func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
-	g.Use(mw...)
+var svc *model.RouterService = app.InitAuthService()
 
+func Init(g *gin.Engine, mw ...gin.HandlerFunc ) {
+	g.Use(mw...)
+	
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
 		log.Infof("path: %v", path)
 
-		serviceId := detectService(path)
+		serviceId := svc.DetectedService(path)
 		log.Infof("serviceId: %v", serviceId)
-		var target = findTarget(serviceId)
+		var target = svc.FindTarget(serviceId)
 		log.Infof("target: %s", target)
 
 		proxy := httputil.ReverseProxy{
 			Director: func(r *http.Request) {
 				r.URL.Scheme = "http"
 				r.URL.Host = target
-				realPath := getReverseProxyPath(path, serviceId)
+				realPath := svc.GetReverseProxyPath(path, serviceId)
 				log.Infof("realPath: %v", realPath)
 				r.URL.Path = realPath
 				log.Infof("r.Header: %v", r.Header)
@@ -46,37 +45,3 @@ func InitializeRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 
 }
 
-func findTarget(serviceId string) string {
-	var eurekURL = viper.GetString("eureka_url")
-	var eurekaClient = eureka.NewClient(eurekURL)
-	if serviceId == "" {
-		return ""
-	}
-	app, err := eurekaClient.GetApp(strings.ToUpper(serviceId))
-	if err != nil {
-		log.Errorf("get service id failed, err: %v", err)
-		return ""
-	}
-	return maputil.LoadBalance(maputil.MapToString(app.App.Instance, func(instance eureka.Instance) string {
-		if instance.HomePageUrl != "" {
-			u, _ := url.Parse(instance.HomePageUrl)
-			return u.Host
-		}
-		return ""
-	}))
-}
-
-func detectService(path string) string {
-	if path == "" {
-		return path
-	}
-	s := strings.Split(path, `/`)
-	if len(s) == 0 {
-		return path
-	}
-	return s[1]
-}
-
-func getReverseProxyPath(path, serviceId string) string {
-	return path[strings.Index(path, serviceId)+len(serviceId):]
-}
