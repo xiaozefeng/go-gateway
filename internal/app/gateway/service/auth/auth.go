@@ -8,7 +8,6 @@ import (
 	"github.com/go-gateway/internal/app/gateway/biz/domain"
 	"github.com/go-gateway/internal/pkg/client/eureka"
 	"github.com/go-gateway/internal/pkg/client/member"
-	"github.com/go-gateway/internal/pkg/router/svc"
 	"github.com/go-gateway/internal/pkg/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -16,7 +15,7 @@ import (
 
 type AuthService struct{}
 
-func NewAuthService() svc.AuthService {
+func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
@@ -75,7 +74,7 @@ type TokenService struct {
 	BizAuthService
 }
 
-func NewTokenService(ba BizAuthService) svc.TokenService {
+func NewTokenService(ba BizAuthService) *TokenService {
 	return &TokenService{ba}
 }
 

@@ -17,9 +17,9 @@ import (
 
 func InitRouterService() *svc.RouterService {
 	authService := auth.NewAuthService()
-	authRepo := auth2.NewAuthURLRepo()
-	bizAuthService := biz.NewBizUserService(authRepo)
-	tokenService := auth.NewTokenService(bizAuthService)
+	authURLRepo := auth2.NewAuthURLRepo()
+	authUsercase := biz.NewBizUserService(authURLRepo)
+	tokenService := auth.NewTokenService(authUsercase)
 	routerService := svc.NewRouterService(authService, tokenService)
 	return routerService
 }

@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/go-gateway/internal/app/gateway/biz/domain"
-	"github.com/go-gateway/internal/app/gateway/service/auth"
 )
 
 type AuthRepo interface {
@@ -15,7 +14,7 @@ type AuthUsercase struct {
 	AuthRepo
 }
 
-func NewBizUserService(repo AuthRepo) auth.BizAuthService {
+func NewBizUserService(repo AuthRepo)  *AuthUsercase{
 	return &AuthUsercase{repo}
 }
 

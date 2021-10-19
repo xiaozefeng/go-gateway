@@ -11,7 +11,13 @@ import (
 	"github.com/google/wire"
 )
 func InitRouterService() *svc.RouterService {
-	wire.Build(svc.NewRouterService, auth.NewAuthService, auth.NewTokenService, biz.NewBizUserService, data.NewAuthURLRepo)
-	return &svc.RouterService{}
+	panic(wire.Build(svc.NewRouterService,
+		wire.Bind(new(svc.AuthService), new(*auth.AuthService)),
+		wire.Bind(new(svc.TokenService), new(*auth.TokenService)),
+		auth.NewAuthService,
+		auth.NewTokenService,
+		biz.NewBizUserService,
+		wire.Bind(new(auth.BizAuthService), new(*biz.AuthUsercase)),
+		wire.Bind(new(biz.AuthRepo), new(*data.AuthURLRepo)),
+		data.NewAuthURLRepo))
 }
-
