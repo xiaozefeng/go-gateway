@@ -15,7 +15,7 @@ start: build
 	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
 
 stop:
-	ps -ef |grep gateway |grep -v grep  | awk '{print $2}' |xargs kill -9
+	ps -ef |grep gateway |grep -v grep  | awk '{print $$2}' |xargs kill -9
 
 restart: stop start
 
