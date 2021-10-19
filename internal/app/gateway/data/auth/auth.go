@@ -39,7 +39,7 @@ func (repo *AuthURLRepo) List() ([]*domain.AuthURL, error) {
 func convert(list []*schema.AuthURL) []*domain.AuthURL {
 	var result []*domain.AuthURL
 	for _, au := range list {
-		var authURL *domain.AuthURL
+		var authURL = &domain.AuthURL{}
 		authURL.ServiceId = au.ServiceId
 		authURL.Url = au.Url
 		authURL.Prefix = au.Prefix
