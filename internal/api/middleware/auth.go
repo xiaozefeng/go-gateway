@@ -8,9 +8,9 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/biz"
-	"github.com/go-gateway/internal/client/member"
-	"github.com/go-gateway/internal/data/schema"
+	"github.com/go-gateway/internal/app/gateway/biz"
+	"github.com/go-gateway/internal/app/gateway/data/schema"
+	"github.com/go-gateway/internal/pkg/client/member"
 )
 
 var (

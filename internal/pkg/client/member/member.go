@@ -8,7 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/go-gateway/internal/client/eureka"
+	"github.com/go-gateway/internal/pkg/client/eureka"
 	"github.com/go-gateway/internal/pkg/maputil"
 	"github.com/go-gateway/internal/pkg/seri/member"
 	"github.com/spf13/viper"

@@ -3,8 +3,8 @@ package biz
 import (
 	"strings"
 
-	"github.com/go-gateway/internal/data/auth"
-	"github.com/go-gateway/internal/data/schema"
+	"github.com/go-gateway/internal/app/gateway/data/auth"
+	"github.com/go-gateway/internal/app/gateway/data/schema"
 )
 
 type AuthService interface {

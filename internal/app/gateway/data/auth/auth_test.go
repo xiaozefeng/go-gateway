@@ -8,7 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/go-gateway/internal/data/schema"
+	"github.com/go-gateway/internal/app/gateway/data/schema"
 	_ "github.com/go-sql-driver/mysql"
 )
 

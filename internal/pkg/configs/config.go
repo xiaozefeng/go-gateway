@@ -10,7 +10,7 @@ func InitializeConfig(cfg string) error {
 	} else {
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
-		viper.AddConfigPath("configs")
+		viper.AddConfigPath("conf")
 	}
 	return viper.ReadInConfig()
 }

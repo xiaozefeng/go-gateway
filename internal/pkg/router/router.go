@@ -1,4 +1,4 @@
-package api
+package router
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/client/eureka"
+	"github.com/go-gateway/internal/pkg/client/eureka"
 	"github.com/go-gateway/internal/pkg/maputil"
 	"github.com/spf13/viper"
 )

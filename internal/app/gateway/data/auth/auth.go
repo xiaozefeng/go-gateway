@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/go-gateway/internal/data/db"
-	"github.com/go-gateway/internal/data/schema"
+	"github.com/go-gateway/internal/app/gateway/data/db"
+	"github.com/go-gateway/internal/app/gateway/data/schema"
 )
 
 type AuthURLRepo struct {

@@ -11,11 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/api"
-	"github.com/go-gateway/configs"
 	"github.com/go-gateway/internal/api/middleware"
-	"github.com/go-gateway/internal/data/db"
-	"github.com/go-gateway/logs"
+	"github.com/go-gateway/internal/app/gateway/data/db"
+	"github.com/go-gateway/internal/pkg/configs"
+	"github.com/go-gateway/internal/pkg/logs"
+	"github.com/go-gateway/internal/pkg/router"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	gin.SetMode(viper.GetString("runmode"))
-	router := gin.New()
+	engine := gin.New()
 	var handlers []gin.HandlerFunc
 	handlers = append(handlers,gin.Recovery() )
 	handlers = append(handlers,middleware.NoCache)
@@ -55,11 +55,11 @@ func main() {
 	handlers = append(handlers,middleware.Login)
 	handlers = append(handlers,gin.Logger() )
 
-	api.InitializeRouter(router, handlers...)
+	router.InitializeRouter(engine, handlers...)
 
 	srv := &http.Server{
 		Addr:    viper.GetString("addr"),
-		Handler: router,
+		Handler: engine,
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())

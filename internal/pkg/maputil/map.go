@@ -1,6 +1,6 @@
 package maputil
 
-import "github.com/go-gateway/internal/client/eureka"
+import "github.com/go-gateway/internal/pkg/client/eureka"
 
 
 func LoadBalance(instances []string) string {
