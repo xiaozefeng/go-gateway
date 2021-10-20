@@ -56,9 +56,9 @@ func main() {
 	handlers = append(handlers, gin.Logger())
 
 	// svc := app.InitAuthService()
-	router.Init(engine, handlers...)
+	router.Load(engine, handlers...)
 
-	srv := &http.Server{
+	server := &http.Server{
 		Addr:    viper.GetString("addr"),
 		Handler: engine,
 	}
@@ -69,12 +69,12 @@ func main() {
 	g.Go(func() error {
 		<-errCtx.Done()
 		log.Println("stooping http server")
-		return srv.Shutdown(errCtx)
+		return server.Shutdown(errCtx)
 	})
 
 	g.Go(func() error {
 		log.Infof("starting http server at address: %s", viper.GetString("addr"))
-		return srv.ListenAndServe()
+		return server.ListenAndServe()
 	})
 
 	g.Go(func() error {

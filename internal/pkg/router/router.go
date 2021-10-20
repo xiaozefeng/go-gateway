@@ -12,7 +12,7 @@ import (
 
 var svc  = app.GetRouterService()
 
-func Init(g *gin.Engine, mw ...gin.HandlerFunc ) {
+func Load(g *gin.Engine, mw ...gin.HandlerFunc ) {
 	g.Use(mw...)
 	
 	g.Any("/*action", func(c *gin.Context) {
