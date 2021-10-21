@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"github.com/go-gateway/internal/app/gateway/biz/domain"
-	"github.com/go-gateway/internal/app/gateway/data/db"
-	"github.com/go-gateway/internal/app/gateway/data/schema"
+	"github.com/go-gateway/internal/gateway/biz/domain"
+	"github.com/go-gateway/internal/gateway/data/db"
+	"github.com/go-gateway/internal/gateway/data/schema"
 	"github.com/sirupsen/logrus"
 )
 

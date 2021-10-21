@@ -3,7 +3,7 @@ package biz
 import (
 	"strings"
 
-	"github.com/go-gateway/internal/app/gateway/biz/domain"
+	"github.com/go-gateway/internal/gateway/biz/domain"
 )
 
 type AuthRepo interface {

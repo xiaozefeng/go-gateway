@@ -1,16 +1,16 @@
-package router
+package api
 
 import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/go-gateway/internal/pkg/app"
+	"github.com/go-gateway/internal/pkg/wire"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
 
-var svc  = app.GetRouterService()
+var svc  = wire.GetRouterService()
 
 func Load(g *gin.Engine, mw ...gin.HandlerFunc ) {
 	g.Use(mw...)

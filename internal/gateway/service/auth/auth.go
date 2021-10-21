@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/go-gateway/internal/app/gateway/biz/domain"
+	"github.com/go-gateway/internal/gateway/biz/domain"
 	"github.com/go-gateway/internal/pkg/client/eureka"
 	"github.com/go-gateway/internal/pkg/client/member"
 	"github.com/go-gateway/internal/pkg/util"

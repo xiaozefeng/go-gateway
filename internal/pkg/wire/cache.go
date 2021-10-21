@@ -1,7 +1,7 @@
-package app
+package wire
 
 import (
-	"github.com/go-gateway/internal/pkg/router/svc"
+	"github.com/go-gateway/internal/gateway/api/svc"
 )
 
 var cache map[string]interface{}

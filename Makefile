@@ -2,11 +2,11 @@ clean:
 	rm -f cmd/gateway/gateway
 	rm -f gateway.log
 
-build: clean generate
+build: clean gen
 	cd cmd/gateway && go build -v .
 
-generate:
-	cd internal/pkg/app && wire
+gen:
+	cd internal/pkg/wire && wire
 
 run: build 
 	./cmd/gateway/gateway -c ./conf/tk.yaml

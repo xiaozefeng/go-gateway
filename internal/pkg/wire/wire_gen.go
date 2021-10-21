@@ -4,13 +4,13 @@
 //go:build !wireinject
 // +build !wireinject
 
-package app
+package wire
 
 import (
-	"github.com/go-gateway/internal/app/gateway/biz"
-	auth2 "github.com/go-gateway/internal/app/gateway/data/auth"
-	"github.com/go-gateway/internal/app/gateway/service/auth"
-	"github.com/go-gateway/internal/pkg/router/svc"
+	"github.com/go-gateway/internal/gateway/api/svc"
+	"github.com/go-gateway/internal/gateway/biz"
+	auth2 "github.com/go-gateway/internal/gateway/data/auth"
+	"github.com/go-gateway/internal/gateway/service/auth"
 )
 
 // Injectors from wire.go:

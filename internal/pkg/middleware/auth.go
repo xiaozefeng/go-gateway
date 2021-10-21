@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-gateway/internal/pkg/wire"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/pkg/app"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 	PLATFORM_ID       = "platformId"
 )
 
-var svc = app.GetRouterService()
+var svc = wire.GetRouterService()
 
 func Login(c *gin.Context) {
 	path := c.Request.URL.Path
