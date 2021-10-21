@@ -1,12 +1,12 @@
 addr: :8080
-eureka_url: http://172.16.0.11:9100/eureka
+eureka_url: ${eureka_url}
 runmode: debug
 log:
-  path: ./gateway.log
+  path: $${log_path}
 
 db:
-  user: u_super_hero
-  passwd: u*P1e5r@hE2r
-  database: api_gate
-  host: 172.16.32.3
-  port: 3306
+  user: ${db_user}
+  passwd: ${db_passwd}
+  database: ${db.database}
+  host: ${db.host}
+  port: ${db.port}

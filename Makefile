@@ -12,7 +12,7 @@ run: build
 	./cmd/gateway/gateway -c ./conf/tk.yaml
 
 start: build
-	nohup ./cmd/gateway/gateway -c ./conf/tk.yaml >> /dev/null 2>&1 &
+	nohup ./cmd/gateway/gateway -c /etc/tk.yaml >> /dev/null 2>&1 &
 
 stop:
 	ps -ef |grep gateway |grep -v grep  | awk '{print $$2}' |xargs kill -9
@@ -20,5 +20,3 @@ stop:
 restart: stop start
 
 
-try: build
-	./cmd/gateway/gateway  -c ./conf/config.yaml
