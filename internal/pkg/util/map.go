@@ -1,7 +1,6 @@
 package util
 
-import "github.com/go-gateway/internal/pkg/client/eureka"
-
+import "github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 
 func LoadBalance(instances []string) string {
 	if len(instances) > 0 {
@@ -9,7 +8,6 @@ func LoadBalance(instances []string) string {
 	}
 	return ""
 }
-
 
 func MapToString(instances []eureka.Instance, apply func(eureka.Instance) string) []string {
 	var res []string

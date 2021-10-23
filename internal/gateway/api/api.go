@@ -4,17 +4,17 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/go-gateway/internal/pkg/wire"
 	log "github.com/sirupsen/logrus"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
 
 	"github.com/gin-gonic/gin"
 )
 
-var svc  = wire.GetRouterService()
+var svc = wire.GetRouterService()
 
-func Load(g *gin.Engine, mw ...gin.HandlerFunc ) {
+func Load(g *gin.Engine, mw ...gin.HandlerFunc) {
 	g.Use(mw...)
-	
+
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
 		log.Infof("path: %v", path)
@@ -43,4 +43,3 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc ) {
 	})
 
 }
-

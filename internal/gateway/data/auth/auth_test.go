@@ -8,11 +8,11 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/go-gateway/internal/gateway/data/schema"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
 
-func Test_db(t *testing.T){ 
+func Test_db(t *testing.T) {
 	user := "u_super_hero"
 	passwd := "u*P1e5r@hE2r"
 	host := "172.16.32.3"
@@ -29,7 +29,7 @@ func Test_db(t *testing.T){
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
-	
+
 	rows, err := db.Query("select service_id, url, force_auth, prefix from auth_url")
 	if err != nil {
 		t.Error(err)
@@ -58,11 +58,10 @@ func Test_db(t *testing.T){
 		t.Error(err)
 	}
 	for _, au := range result {
-		fmt.Printf("au: %+v\n", au)	
+		fmt.Printf("au: %+v\n", au)
 	}
-	
-}
 
+}
 
 func getDataSource(url string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", url)

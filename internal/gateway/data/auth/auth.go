@@ -1,17 +1,17 @@
 package auth
 
 import (
-	"github.com/go-gateway/internal/gateway/biz/domain"
-	"github.com/go-gateway/internal/gateway/data/db"
-	"github.com/go-gateway/internal/gateway/data/schema"
 	"github.com/sirupsen/logrus"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
 
 type AuthURLRepo struct {
 	// *sql.DB
 }
 
-func NewAuthURLRepo() *AuthURLRepo{
+func NewAuthURLRepo() *AuthURLRepo {
 	return &AuthURLRepo{}
 }
 

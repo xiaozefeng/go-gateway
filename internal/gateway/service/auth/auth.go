@@ -5,12 +5,12 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/go-gateway/internal/gateway/biz/domain"
-	"github.com/go-gateway/internal/pkg/client/eureka"
-	"github.com/go-gateway/internal/pkg/client/member"
-	"github.com/go-gateway/internal/pkg/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
 type AuthService struct{}
@@ -111,7 +111,7 @@ func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
 	return filtered[0].IsForeLogin()
 }
 
-func filterAuthURL(list []*domain.AuthURL, filter func(*domain.AuthURL) bool) []*domain.AuthURL{
+func filterAuthURL(list []*domain.AuthURL, filter func(*domain.AuthURL) bool) []*domain.AuthURL {
 	var res []*domain.AuthURL
 	for _, l := range list {
 		if filter(l) {

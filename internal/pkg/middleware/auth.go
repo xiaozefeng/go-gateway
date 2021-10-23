@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-gateway/internal/pkg/wire"
 	log "github.com/sirupsen/logrus"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,4 +52,3 @@ func setHeader(c *gin.Context, memberId int, sourceType string) {
 	h.Set(MID, fmt.Sprintf("%d", memberId))
 	h.Set(SOURCE_TYPE, sourceType)
 }
-

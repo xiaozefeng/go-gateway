@@ -8,10 +8,10 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/go-gateway/internal/pkg/client/eureka"
-	"github.com/go-gateway/internal/pkg/client/member/decode"
-	"github.com/go-gateway/internal/pkg/util"
 	"github.com/spf13/viper"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/decode"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
 type GetMemberResp struct {

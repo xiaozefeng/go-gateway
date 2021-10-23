@@ -11,12 +11,12 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-gateway/internal/gateway/api"
-	"github.com/go-gateway/internal/gateway/data/db"
-	"github.com/go-gateway/internal/pkg/configs"
-	"github.com/go-gateway/internal/pkg/logs"
-	"github.com/go-gateway/internal/pkg/middleware"
 	"github.com/spf13/viper"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/configs"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/logs"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
 	"golang.org/x/sync/errgroup"
 )
 
