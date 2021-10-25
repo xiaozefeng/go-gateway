@@ -56,7 +56,7 @@ func main() {
 	handlers = append(handlers, gin.Logger())
 
 	// svc := app.InitAuthService()
-	api.Load(engine, handlers...)
+	api.InitRouter(engine, handlers...)
 
 	server := &http.Server{
 		Addr:    viper.GetString("addr"),
