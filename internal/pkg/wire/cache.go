@@ -1,16 +1,16 @@
 package wire
 
 import (
-	"github.com/go-gateway/internal/gateway/api/svc"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
 )
 
 var cache map[string]interface{}
 
-func init () {
+func init() {
 	cache = make(map[string]interface{})
 	cache["router-service"] = InitRouterService()
 }
 
-func GetRouterService () *svc.RouterService{
+func GetRouterService() *svc.RouterService {
 	return cache["router-service"].(*svc.RouterService)
 }

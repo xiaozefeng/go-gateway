@@ -4,12 +4,13 @@
 package wire
 
 import (
-	"github.com/go-gateway/internal/gateway/biz"
-	data "github.com/go-gateway/internal/gateway/data/auth"
-	"github.com/go-gateway/internal/gateway/service/auth"
-	"github.com/go-gateway/internal/gateway/api/svc"
 	"github.com/google/wire"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
+	data "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
 )
+
 func InitRouterService() *svc.RouterService {
 	panic(wire.Build(svc.NewRouterService,
 		wire.Bind(new(svc.AuthService), new(*auth.AuthService)),

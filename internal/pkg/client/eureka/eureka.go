@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/go-gateway/internal/pkg/util/httputil"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/util/httputil"
 )
 
 type Client struct {

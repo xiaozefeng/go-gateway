@@ -7,10 +7,10 @@
 package wire
 
 import (
-	"github.com/go-gateway/internal/gateway/api/svc"
-	"github.com/go-gateway/internal/gateway/biz"
-	auth2 "github.com/go-gateway/internal/gateway/data/auth"
-	"github.com/go-gateway/internal/gateway/service/auth"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
+	auth2 "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
 )
 
 // Injectors from wire.go:

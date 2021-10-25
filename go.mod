@@ -1,4 +1,4 @@
-module github.com/go-gateway
+module github.com/xiaozefeng/go-gateway
 
 go 1.17
 
@@ -24,7 +24,7 @@ require (
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sys v0.0.0-20210923061019-b8560ed6a9b7 // indirect
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
