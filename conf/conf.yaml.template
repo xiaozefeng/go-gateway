@@ -1,0 +1,13 @@
+addr: ${addr} # exampel :8090
+eureka_url: ${eureka_url} # eureka server url, example: http://127.0.0.1:9100/eureka
+runmode: ${runmode} # gin runmode , example:  debug, release
+log:
+  path: ${log_path} 
+
+db:
+  user: ${db_user}
+  passwd: ${db_passwd}
+  database: ${db_database}
+  host: ${db_host}
+  port: ${db_port}
+
