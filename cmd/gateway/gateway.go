@@ -20,15 +20,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-var cfg string
-
-func init() {
-	flag.StringVar(&cfg, "c", "", "cofnig file")
-	flag.Parse()
-}
-
 func main() {
-	err := InitDepend()
+	err := Init()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +78,12 @@ func main() {
 	}
 }
 
-func InitDepend() error {
+func Init() error {
+
+	var cfg string
+	flag.StringVar(&cfg, "c", "", "cofnig file")
+	flag.Parse()
+
 	err := configs.Init(cfg)
 	if err != nil {
 		return err

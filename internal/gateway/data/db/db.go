@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// var DB *sql.DB
-
 func Init() (*sql.DB, error) {
 	user := viper.GetString("db.user")
 	passwd := viper.GetString("db.passwd")
@@ -41,7 +39,3 @@ func getDataSource(url string) (*sql.DB, error) {
 	fmt.Println("Connection to the mysql server")
 	return db, nil
 }
-
-/* func Close() { */
-/* DB.Close() */
-/* } */
