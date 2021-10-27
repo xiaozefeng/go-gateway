@@ -49,6 +49,7 @@ func main() {
 	wire.InitDI()
 
 	gin.SetMode(viper.GetString("runmode"))
+
 	engine := gin.New()
 	var handlers []gin.HandlerFunc
 	handlers = append(handlers, gin.Recovery())
@@ -58,7 +59,6 @@ func main() {
 	handlers = append(handlers, middleware.Login)
 	handlers = append(handlers, gin.Logger())
 
-	// svc := app.InitAuthService()
 	api.InitRouter(engine, handlers...)
 
 	server := &http.Server{
