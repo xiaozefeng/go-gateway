@@ -17,6 +17,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/configs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/logs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -44,6 +45,8 @@ func main() {
 		log.Println(err)
 		panic("init db failed")
 	}
+
+	wire.InitDI()
 
 	gin.SetMode(viper.GetString("runmode"))
 	engine := gin.New()
