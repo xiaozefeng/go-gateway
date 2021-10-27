@@ -10,9 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var svc = wire.GetRouterService()
-
 func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
+	var svc = wire.GetRouterService()
 	g.Use(mw...)
 
 	g.Any("/*action", func(c *gin.Context) {

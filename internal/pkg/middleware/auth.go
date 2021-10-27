@@ -20,9 +20,8 @@ var (
 	PLATFORM_ID       = "platformId"
 )
 
-var svc = wire.GetRouterService()
-
 func Login(c *gin.Context) {
+	var svc = wire.GetRouterService()
 	path := c.Request.URL.Path
 	serviceId := svc.DetectedService(path)
 
