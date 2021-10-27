@@ -8,7 +8,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/spf13/viper"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/decode"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
@@ -26,8 +25,7 @@ type GetMemberReq struct {
 
 var MEMBER_APP_ID = "hotel-operation-platform-member"
 
-func GetMember(token, sourceType string) (*GetMemberResp, error) {
-	cli := eureka.NewClient(viper.GetString("eureka_url"))
+func GetMember(cli *eureka.Client, token, sourceType string) (*GetMemberResp, error) {
 	app, err := cli.GetApp(MEMBER_APP_ID)
 	if err != nil {
 		return nil, err

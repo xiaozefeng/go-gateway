@@ -1,6 +1,4 @@
-clean:
-	rm -f cmd/gateway/gateway
-	rm -f gateway.log
+.PHONY: build gen run start stop restart clean
 
 build: clean gen
 	cd cmd/gateway && go build -v .
@@ -20,3 +18,6 @@ stop:
 restart: stop start
 
 
+clean:
+	rm -f cmd/gateway/gateway
+	rm -f gateway.log

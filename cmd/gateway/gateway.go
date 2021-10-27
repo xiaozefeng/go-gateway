@@ -28,13 +28,13 @@ func init() {
 }
 
 func main() {
-	err := configs.InitializeConfig(cfg)
+	err := configs.Init(cfg)
 	if err != nil {
 		log.Println(err)
 		panic("load config failed")
 	}
 
-	err = logs.InitLog(viper.GetString("log.path"))
+	err = logs.Init(viper.GetString("log.path"))
 	if err != nil {
 		panic("init logging failed")
 	}

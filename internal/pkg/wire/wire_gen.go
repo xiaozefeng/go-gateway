@@ -11,15 +11,22 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
 	auth2 "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 )
 
 // Injectors from wire.go:
 
-func InitRouterService() *svc.RouterService {
-	authService := auth.NewAuthService()
+func InitRouterService(eurekaServerURL string) *svc.RouterService {
+	client := InitEurekaClient(eurekaServerURL)
+	authService := auth.NewAuthService(client)
 	authURLRepo := auth2.NewAuthURLRepo()
 	authUsercase := biz.NewBizUserService(authURLRepo)
-	tokenService := auth.NewTokenService(authUsercase)
+	tokenService := auth.NewTokenService(authUsercase, client)
 	routerService := svc.NewRouterService(authService, tokenService)
 	return routerService
+}
+
+func InitEurekaClient(eurekaServerURL string) *eureka.Client {
+	client := eureka.NewClient(eurekaServerURL)
+	return client
 }

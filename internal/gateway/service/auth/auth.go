@@ -6,17 +6,18 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
-type AuthService struct{}
+type AuthService struct {
+	cli *eureka.Client
+}
 
-func NewAuthService() *AuthService {
-	return &AuthService{}
+func NewAuthService(cli *eureka.Client) *AuthService {
+	return &AuthService{cli: cli}
 }
 
 func (as *AuthService) DetectedService(path string) string {
@@ -24,20 +25,18 @@ func (as *AuthService) DetectedService(path string) string {
 }
 
 func (as *AuthService) FindTarget(serviceId string) string {
-	return findTarget(serviceId)
+	return findTarget(as.cli, serviceId)
 }
 
 func (as *AuthService) GetReverseProxyPath(path, serviceId string) string {
 	return getReverseProxyPath(path, serviceId)
 }
 
-func findTarget(serviceId string) string {
-	var eurekURL = viper.GetString("eureka_url")
-	var eurekaClient = eureka.NewClient(eurekURL)
+func findTarget(cli *eureka.Client, serviceId string) string {
 	if serviceId == "" {
 		return ""
 	}
-	app, err := eurekaClient.GetApp(strings.ToUpper(serviceId))
+	app, err := cli.GetApp(strings.ToUpper(serviceId))
 	if err != nil {
 		logrus.Errorf("get service id failed, err: %v", err)
 		return ""
@@ -71,25 +70,26 @@ type BizAuthService interface {
 }
 
 type TokenService struct {
-	BizAuthService
+	bizSvc BizAuthService
+	cli    *eureka.Client
 }
 
-func NewTokenService(ba BizAuthService) *TokenService {
-	return &TokenService{ba}
+func NewTokenService(ba BizAuthService, cli *eureka.Client) *TokenService {
+	return &TokenService{bizSvc: ba, cli: cli}
 }
 
 func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err error) {
 	if token == "" || token == "null" || token == "undefined" {
 		return -1, fmt.Errorf("invalid token: %s", token)
 	}
-	resp, err := member.GetMember(token, sourceType)
+	resp, err := member.GetMember(ts.cli, token, sourceType)
 	if err != nil {
 		return -1, err
 	}
 	return resp.MemberId, nil
 }
 func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
-	m, err := ts.ListAuthURL()
+	m, err := ts.bizSvc.ListAuthURL()
 	if err != nil {
 		logrus.Errorf("list auth url happened error: %v", err)
 		return false
