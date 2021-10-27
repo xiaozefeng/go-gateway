@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/model"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
@@ -68,21 +68,25 @@ func getReverseProxyPath(path, serviceId string) string {
 type BizAuthService interface {
 	ListAuthURL() (map[string][]*domain.AuthURL, error)
 }
-
-type TokenService struct {
-	bizSvc BizAuthService
-	cli    *eureka.Client
+type MemberService interface {
+	GetMember(token string, sourceType string) (*model.GetMemberResp, error)
 }
 
-func NewTokenService(ba BizAuthService, cli *eureka.Client) *TokenService {
-	return &TokenService{bizSvc: ba, cli: cli}
+type TokenService struct {
+	bizSvc    BizAuthService
+	cli       *eureka.Client
+	memberSvc MemberService
+}
+
+func NewTokenService(ba BizAuthService, cli *eureka.Client, memberSvc MemberService) *TokenService {
+	return &TokenService{bizSvc: ba, cli: cli, memberSvc: memberSvc}
 }
 
 func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err error) {
 	if token == "" || token == "null" || token == "undefined" {
 		return -1, fmt.Errorf("invalid token: %s", token)
 	}
-	resp, err := member.GetMember(ts.cli, token, sourceType)
+	resp, err := ts.memberSvc.GetMember(token, sourceType)
 	if err != nil {
 		return -1, err
 	}

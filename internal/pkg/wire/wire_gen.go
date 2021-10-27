@@ -14,6 +14,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
 )
 
 // Injectors from wire.go:
@@ -23,7 +24,8 @@ func InitRouterService(eurekaServerURL string, db *sql.DB) *svc.RouterService {
 	authService := auth.NewAuthService(client)
 	authURLRepo := auth2.NewAuthURLRepo(db)
 	authUsercase := biz.NewBizUserService(authURLRepo)
-	tokenService := auth.NewTokenService(authUsercase, client)
+	memberService := member.NewMemberService(client)
+	tokenService := auth.NewTokenService(authUsercase, client, memberService)
 	routerService := svc.NewRouterService(authService, tokenService)
 	return routerService
 }

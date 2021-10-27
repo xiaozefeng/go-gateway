@@ -4,8 +4,9 @@ import (
 	"database/sql"
 
 	"github.com/spf13/viper"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
 )
 
 var cache map[string]interface{}
@@ -26,15 +27,19 @@ func InitDI() error {
 	cache[db_ref] = dbRef
 	cache[router_service] = InitRouterService(eurekaURL, dbRef)
 	cache[eureka_client] = InitEurekaClient(eurekaURL)
+
+	dependyInject()
 	return nil
 }
 
-func GetRouterService() *svc.RouterService {
-	return cache[router_service].(*svc.RouterService)
+func dependyInject() {
+	routerService := getRouterService()
+	api.SetRouterService(routerService)
+	middleware.SetRouterService(routerService)
 }
 
-func GetEurekaClient() *eureka.Client {
-	return cache[eureka_client].(*eureka.Client)
+func getRouterService() *svc.RouterService {
+	return cache[router_service].(*svc.RouterService)
 }
 
 func GetDB() *sql.DB {

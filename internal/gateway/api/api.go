@@ -5,29 +5,30 @@ import (
 	"net/http/httputil"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
 
 	"github.com/gin-gonic/gin"
 )
 
+var routerSvc *svc.RouterService
+
 func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
-	var svc = wire.GetRouterService()
 	g.Use(mw...)
 
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
 		log.Infof("path: %v", path)
 
-		serviceId := svc.DetectedService(path)
+		serviceId := routerSvc.DetectedService(path)
 		log.Infof("serviceId: %v", serviceId)
-		var target = svc.FindTarget(serviceId)
+		var target = routerSvc.FindTarget(serviceId)
 		log.Infof("target: %s", target)
 
 		proxy := httputil.ReverseProxy{
 			Director: func(r *http.Request) {
 				r.URL.Scheme = "http"
 				r.URL.Host = target
-				realPath := svc.GetReverseProxyPath(path, serviceId)
+				realPath := routerSvc.GetReverseProxyPath(path, serviceId)
 				log.Infof("realPath: %v", realPath)
 				r.URL.Path = realPath
 				log.Infof("r.Header: %v", r.Header)
@@ -41,4 +42,8 @@ func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 		proxy.ServeHTTP(c.Writer, c.Request)
 	})
 
+}
+
+func SetRouterService(rs *svc.RouterService) {
+	routerSvc = rs
 }

@@ -10,30 +10,29 @@ import (
 
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/decode"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/model"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
-type GetMemberResp struct {
-	MemberId   int    `json:"memberId,omitempty"`
-	SourceType string `json:"sourceType,omitempty"`
+const MEMBER_APP_ID = "hotel-operation-platform-member"
+
+type MemberService struct {
+	cli *eureka.Client
 }
 
-type GetMemberReq struct {
-	SourceType string `json:"sourceType"`
-	Token      string `json:"token"`
+func NewMemberService(cli *eureka.Client) *MemberService {
+	return &MemberService{cli: cli}
 }
 
-var MEMBER_APP_ID = "hotel-operation-platform-member"
-
-func GetMember(cli *eureka.Client, token, sourceType string) (*GetMemberResp, error) {
-	app, err := cli.GetApp(MEMBER_APP_ID)
+func (m *MemberService) GetMember(token, sourceType string) (*model.GetMemberResp, error) {
+	app, err := m.cli.GetApp(MEMBER_APP_ID)
 	if err != nil {
 		return nil, err
 	}
 	choosed := util.LoadBalance(util.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		return instance.HomePageUrl
 	}))
-	var getMemberReq = GetMemberReq{
+	var getMemberReq = model.GetMemberReq{
 		SourceType: sourceType,
 		Token:      token,
 	}
@@ -48,7 +47,7 @@ func GetMember(cli *eureka.Client, token, sourceType string) (*GetMemberResp, er
 		return nil, err
 	}
 	log.Infof("get member result: %s", b)
-	var r GetMemberResp
+	var r model.GetMemberResp
 	err = decode.Decode(b, &r)
 	if err != nil {
 		return nil, err

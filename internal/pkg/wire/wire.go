@@ -13,6 +13,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
 )
 
 func InitRouterService(eurekaServerURL string, db *sql.DB) *svc.RouterService {
@@ -22,9 +23,11 @@ func InitRouterService(eurekaServerURL string, db *sql.DB) *svc.RouterService {
 		auth.NewAuthService,
 		auth.NewTokenService,
 		biz.NewBizUserService,
+		member.NewMemberService,
 		InitEurekaClient,
 		wire.Bind(new(auth.BizAuthService), new(*biz.AuthUsercase)),
 		wire.Bind(new(biz.AuthRepo), new(*data.AuthURLRepo)),
+		wire.Bind(new(auth.MemberService), new(*member.MemberService)),
 		data.NewAuthURLRepo))
 }
 
