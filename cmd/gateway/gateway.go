@@ -13,7 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/api"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/configs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/logs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
@@ -29,24 +28,10 @@ func init() {
 }
 
 func main() {
-	err := configs.Init(cfg)
+	err := InitDepend()
 	if err != nil {
-		log.Println(err)
-		panic("load config failed")
+		log.Fatal(err)
 	}
-
-	err = logs.Init(viper.GetString("log.path"))
-	if err != nil {
-		panic("init logging failed")
-	}
-
-	err = db.Init()
-	if err != nil {
-		log.Println(err)
-		panic("init db failed")
-	}
-
-	wire.InitDI()
 
 	gin.SetMode(viper.GetString("runmode"))
 
@@ -87,7 +72,7 @@ func main() {
 		case sig := <-done:
 			log.Println("sig:", sig)
 			// clean resources
-			db.Close()
+			wire.GetDB().Close()
 			cancel()
 		case <-errCtx.Done():
 			return errCtx.Err()
@@ -98,4 +83,21 @@ func main() {
 	if err := g.Wait(); err != nil {
 		log.Infof("group err: %v", err)
 	}
+}
+
+func InitDepend() error {
+	err := configs.Init(cfg)
+	if err != nil {
+		return err
+	}
+
+	err = logs.Init(viper.GetString("log.path"))
+	if err != nil {
+		return err
+	}
+	err = wire.InitDI()
+	if err != nil {
+		return err
+	}
+	return nil
 }

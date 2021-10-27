@@ -7,19 +7,21 @@
 package wire
 
 import (
+	"database/sql"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
 	auth2 "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/service/auth"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 )
 
 // Injectors from wire.go:
 
-func InitRouterService(eurekaServerURL string) *svc.RouterService {
+func InitRouterService(eurekaServerURL string, db *sql.DB) *svc.RouterService {
 	client := InitEurekaClient(eurekaServerURL)
 	authService := auth.NewAuthService(client)
-	authURLRepo := auth2.NewAuthURLRepo()
+	authURLRepo := auth2.NewAuthURLRepo(db)
 	authUsercase := biz.NewBizUserService(authURLRepo)
 	tokenService := auth.NewTokenService(authUsercase, client)
 	routerService := svc.NewRouterService(authService, tokenService)
@@ -29,4 +31,12 @@ func InitRouterService(eurekaServerURL string) *svc.RouterService {
 func InitEurekaClient(eurekaServerURL string) *eureka.Client {
 	client := eureka.NewClient(eurekaServerURL)
 	return client
+}
+
+func InitDB() (*sql.DB, error) {
+	sqlDB, err := db.Init()
+	if err != nil {
+		return nil, err
+	}
+	return sqlDB, nil
 }

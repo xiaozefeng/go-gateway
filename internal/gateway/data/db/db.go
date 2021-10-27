@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-var DB *sql.DB
+// var DB *sql.DB
 
-func Init() error {
+func Init() (*sql.DB, error) {
 	user := viper.GetString("db.user")
 	passwd := viper.GetString("db.passwd")
 	host := viper.GetString("db.host")
@@ -22,17 +22,16 @@ func Init() error {
 
 	db, err := getDataSource(url)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Println("Connected to the MySQL Server")
 	// See "Important settings" section.
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
-	DB = db
-	return nil
+	// DB = db
+	return db, err
 }
-
 
 func getDataSource(url string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", url)
@@ -43,6 +42,6 @@ func getDataSource(url string) (*sql.DB, error) {
 	return db, nil
 }
 
-func Close() {
-	DB.Close()
-}
+/* func Close() { */
+/* DB.Close() */
+/* } */
