@@ -20,7 +20,7 @@ const (
 func InitDI() error {
 	eurekaURL := viper.GetString("eureka_url")
 	cache = make(map[string]interface{})
-	dbRef, err := InitDB()
+	dbRef, err := InitDB("")
 	if err != nil {
 		return err
 	}

@@ -11,15 +11,15 @@ type AuthRepo interface {
 }
 
 type AuthUsercase struct {
-	AuthRepo
+	repo AuthRepo
 }
 
-func NewBizUserService(repo AuthRepo)  *AuthUsercase{
-	return &AuthUsercase{repo}
+func NewBizUserService(repo AuthRepo) *AuthUsercase {
+	return &AuthUsercase{repo: repo}
 }
 
-func (au *AuthUsercase) ListAuthURL() (map[string][]*domain.AuthURL, error) {
-	result, err := au.List()
+func (usercase *AuthUsercase) ListAuthURL() (map[string][]*domain.AuthURL, error) {
+	result, err := usercase.repo.List()
 	if err != nil {
 		return nil, err
 	}

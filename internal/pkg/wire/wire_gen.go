@@ -35,8 +35,8 @@ func InitEurekaClient(eurekaServerURL string) *eureka.Client {
 	return client
 }
 
-func InitDB() (*sql.DB, error) {
-	sqlDB, err := db.Init()
+func InitDB(url string) (*sql.DB, error) {
+	sqlDB, err := db.Init(url)
 	if err != nil {
 		return nil, err
 	}

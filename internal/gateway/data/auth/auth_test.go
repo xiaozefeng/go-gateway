@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"database/sql"
 	"fmt"
 	"testing"
 	"time"
@@ -9,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
 
@@ -20,7 +20,7 @@ func Test_db(t *testing.T) {
 	database := "api_gate"
 	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, passwd, host, port, database)
 
-	db, err := getDataSource(url)
+	db, err := db.Init(url)
 	if err != nil {
 		t.Error(err)
 	}
@@ -35,16 +35,6 @@ func Test_db(t *testing.T) {
 		t.Error(err)
 	}
 
-	// columns, err := rows.Columns()
-	// if err != nil {
-	// 	t.Error(err)
-	// }
-
-	// values := make([]sql.RawBytes, len(columns))
-	// scanArgs := make([]interface{}, len(values))
-	// for i := range values {
-	// 	scanArgs[i] = &values[i]
-	// }
 	var result []schema.AuthURL
 	for rows.Next() {
 		var r schema.AuthURL
@@ -61,13 +51,4 @@ func Test_db(t *testing.T) {
 		fmt.Printf("au: %+v\n", au)
 	}
 
-}
-
-func getDataSource(url string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", url)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("Connection to the mysql server")
-	return db, nil
 }

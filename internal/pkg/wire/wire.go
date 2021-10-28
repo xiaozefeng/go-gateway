@@ -35,6 +35,6 @@ func InitEurekaClient(eurekaServerURL string) *eureka.Client {
 	panic(wire.Build(eureka.NewClient))
 }
 
-func InitDB() (*sql.DB, error) {
+func InitDB(url string) (*sql.DB, error) {
 	panic(wire.Build(db.Init))
 }

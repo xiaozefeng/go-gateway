@@ -10,14 +10,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Init() (*sql.DB, error) {
-	user := viper.GetString("db.user")
-	passwd := viper.GetString("db.passwd")
-	host := viper.GetString("db.host")
-	port := viper.GetInt("db.port")
-	database := viper.GetString("db.database")
-	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, passwd, host, port, database)
-
+func Init(url string) (*sql.DB, error) {
+	if len(url) == 0 {
+		user := viper.GetString("db.user")
+		passwd := viper.GetString("db.passwd")
+		host := viper.GetString("db.host")
+		port := viper.GetInt("db.port")
+		database := viper.GetString("db.database")
+		url = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, passwd, host, port, database)
+	}
 	db, err := getDataSource(url)
 	if err != nil {
 		return nil, err
