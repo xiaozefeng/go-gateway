@@ -55,7 +55,7 @@ func detectService(path string) string {
 		return path
 	}
 	s := strings.Split(path, `/`)
-	if len(s) == 0 {
+	if len(s) < 2 {
 		return path
 	}
 	return s[1]
