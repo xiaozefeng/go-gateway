@@ -1,37 +1,35 @@
-package api
+package web
 
 import (
 	"net/http"
 	"net/http/httputil"
 
-	log "github.com/sirupsen/logrus"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
-
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-var routerSvc *svc.RouterService
+var routerSvc *RouterService
 
 func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 	g.Use(mw...)
 
 	g.Any("/*action", func(c *gin.Context) {
 		path := c.Request.URL.Path
-		log.Infof("path: %v", path)
+		logrus.Infof("path: %v", path)
 
 		serviceId := routerSvc.DetectedService(path)
-		log.Infof("serviceId: %v", serviceId)
+		logrus.Infof("serviceId: %v", serviceId)
 		var target = routerSvc.FindTarget(serviceId)
-		log.Infof("target: %s", target)
+		logrus.Infof("target: %s", target)
 
 		proxy := httputil.ReverseProxy{
 			Director: func(r *http.Request) {
 				r.URL.Scheme = "http"
 				r.URL.Host = target
 				realPath := routerSvc.GetReverseProxyPath(path, serviceId)
-				log.Infof("realPath: %v", realPath)
+				logrus.Infof("realPath: %v", realPath)
 				r.URL.Path = realPath
-				log.Infof("r.Header: %v", r.Header)
+				logrus.Infof("r.Header: %v", r.Header)
 			},
 			ErrorHandler: func(rw http.ResponseWriter, r *http.Request, err error) {
 				if err != nil {
@@ -44,6 +42,7 @@ func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 
 }
 
-func SetRouterService(rs *svc.RouterService) {
+func SetRouterService(rs *RouterService) {
 	routerSvc = rs
 }
+

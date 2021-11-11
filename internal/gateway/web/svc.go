@@ -1,4 +1,6 @@
-package svc
+package web
+
+
 
 type AuthService interface {
 	DetectedService(path string) string
@@ -8,7 +10,7 @@ type AuthService interface {
 
 type TokenService interface {
 	CheckToken(token, sourceType string) (memberId int, err error)
-	IsNeedLogin(path ,serviceId string) bool
+	IsNeedLogin(path, serviceId string) bool
 }
 
 type RouterService struct {
@@ -17,5 +19,5 @@ type RouterService struct {
 }
 
 func NewRouterService(svc AuthService, tokenService TokenService) *RouterService {
-	return &RouterService{svc , tokenService}
+	return &RouterService{svc, tokenService}
 }

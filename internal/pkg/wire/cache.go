@@ -2,19 +2,18 @@ package wire
 
 import (
 	"database/sql"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/web"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/web/middleware"
 
 	"github.com/spf13/viper"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/api"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/api/svc"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
 )
 
 var cache map[string]interface{}
 
 const (
-	router_service = "router-service"
-	eureka_client  = "eureka-client"
-	db_ref         = "db"
+	routerService = "router-service"
+	eurekaClient = "eureka-client"
+	dbRefKey        = "db"
 )
 
 func InitDI() error {
@@ -24,24 +23,24 @@ func InitDI() error {
 	if err != nil {
 		return err
 	}
-	cache[db_ref] = dbRef
-	cache[router_service] = InitRouterService(eurekaURL, dbRef)
-	cache[eureka_client] = InitEurekaClient(eurekaURL)
+	cache[dbRefKey] = dbRef
+	cache[routerService] = InitRouterService(eurekaURL, dbRef)
+	cache[eurekaClient] = InitEurekaClient(eurekaURL)
 
-	dependyInject()
+	dependedInject()
 	return nil
 }
 
-func dependyInject() {
+func dependedInject() {
 	routerService := getRouterService()
-	api.SetRouterService(routerService)
+	web.SetRouterService(routerService)
 	middleware.SetRouterService(routerService)
 }
 
-func getRouterService() *svc.RouterService {
-	return cache[router_service].(*svc.RouterService)
+func getRouterService() *web.RouterService {
+	return cache[routerService].(*web.RouterService)
 }
 
 func GetDB() *sql.DB {
-	return cache[db_ref].(*sql.DB)
+	return cache[dbRefKey].(*sql.DB)
 }

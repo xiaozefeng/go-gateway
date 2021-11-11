@@ -1,71 +1,15 @@
-package auth
+package biz
 
 import (
 	"fmt"
-	"net/url"
-	"strings"
-
 	"github.com/sirupsen/logrus"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/model"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
+	"strings"
 )
 
-type AuthService struct {
-	cli *eureka.Client
-}
-
-func NewAuthService(cli *eureka.Client) *AuthService {
-	return &AuthService{cli: cli}
-}
-
-func (as *AuthService) DetectedService(path string) string {
-	return detectService(path)
-}
-
-func (as *AuthService) FindTarget(serviceId string) string {
-	return findTarget(as.cli, serviceId)
-}
-
-func (as *AuthService) GetReverseProxyPath(path, serviceId string) string {
-	return getReverseProxyPath(path, serviceId)
-}
-
-func findTarget(cli *eureka.Client, serviceId string) string {
-	if serviceId == "" {
-		return ""
-	}
-	app, err := cli.GetApp(strings.ToUpper(serviceId))
-	if err != nil {
-		logrus.Errorf("get service id failed, err: %v", err)
-		return ""
-	}
-	return util.LoadBalance(util.MapToString(app.App.Instance, func(instance eureka.Instance) string {
-		if instance.HomePageUrl != "" {
-			u, _ := url.Parse(instance.HomePageUrl)
-			return u.Host
-		}
-		return ""
-	}))
-}
-
-func detectService(path string) string {
-	if path == "" {
-		return path
-	}
-	s := strings.Split(path, `/`)
-	if len(s) < 2 {
-		return path
-	}
-	return s[1]
-}
-
-func getReverseProxyPath(path, serviceId string) string {
-	return path[strings.Index(path, serviceId)+len(serviceId):]
-}
-
-type BizAuthService interface {
+type AuthService interface {
 	ListAuthURL() (map[string][]*domain.AuthURL, error)
 }
 type MemberService interface {
@@ -73,12 +17,12 @@ type MemberService interface {
 }
 
 type TokenService struct {
-	bizSvc    BizAuthService
-	cli       *eureka.Client
+	bizSvc AuthService
+	cli    *eureka.Client
 	memberSvc MemberService
 }
 
-func NewTokenService(ba BizAuthService, cli *eureka.Client, memberSvc MemberService) *TokenService {
+func NewTokenService(ba AuthService, cli *eureka.Client, memberSvc MemberService) *TokenService {
 	return &TokenService{bizSvc: ba, cli: cli, memberSvc: memberSvc}
 }
 
@@ -105,8 +49,8 @@ func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
 	}
 	filtered := filterAuthURL(v, func(au *domain.AuthURL) bool {
 		var serviceIdIsEq = strings.ToLower(serviceId) == strings.ToLower(au.ServiceId)
-		var mathcedPath = au.Url == getReverseProxyPath(path, serviceId)
-		return serviceIdIsEq && mathcedPath
+		var matchedPath = au.Url == getReverseProxyPath(path, serviceId)
+		return serviceIdIsEq && matchedPath
 	})
 
 	if len(filtered) == 0 {

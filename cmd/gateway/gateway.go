@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/web"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/web/middleware"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,10 +14,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/api"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/configs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/logs"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/middleware"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
 	"golang.org/x/sync/errgroup"
 )
@@ -37,7 +37,7 @@ func main() {
 	handlers = append(handlers, middleware.Login)
 	handlers = append(handlers, gin.Logger())
 
-	api.InitRouter(engine, handlers...)
+	web.InitRouter(engine, handlers...)
 
 	server := &http.Server{
 		Addr:    viper.GetString("addr"),
@@ -65,7 +65,10 @@ func main() {
 		case sig := <-done:
 			log.Println("sig:", sig)
 			// clean resources
-			wire.GetDB().Close()
+			err:=wire.GetDB().Close()
+			if err != nil {
+				return err
+			}
 			cancel()
 		case <-errCtx.Done():
 			return errCtx.Err()
