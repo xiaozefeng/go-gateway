@@ -12,8 +12,8 @@ import (
 	data "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/web"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member"
 )
 
 func InitRouterService(eurekaServerURL string, db *sql.DB) *web.RouterService {
@@ -25,8 +25,8 @@ func InitRouterService(eurekaServerURL string, db *sql.DB) *web.RouterService {
 		member.NewMemberService,
 		InitEurekaClient,
 		wire.Bind(new(biz.AuthService), new(*biz.AuthUserCase)),
-		wire.Bind(new(biz.AuthRepo), new(*data.AuthURLRepo)),
-		wire.Bind(new(biz.MemberService), new(*member.MemberService)),
+		wire.Bind(new(biz.AuthRepo), new(*data.UrlRepo)),
+		wire.Bind(new(biz.MemberService), new(*member.Service)),
 		data.NewAuthURLRepo))
 }
 

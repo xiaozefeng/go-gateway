@@ -8,17 +8,17 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
 
-type AuthURLRepo struct {
+type UrlRepo struct {
 	*sql.DB
 }
 
-func NewAuthURLRepo(db *sql.DB) *AuthURLRepo {
-	return &AuthURLRepo{db}
+func NewAuthURLRepo(db *sql.DB) *UrlRepo {
+	return &UrlRepo{db}
 }
 
 var cache []*domain.AuthURL
 
-func (repo *AuthURLRepo) List() ([]*domain.AuthURL, error) {
+func (repo *UrlRepo) List() ([]*domain.AuthURL, error) {
 	if cache != nil {
 		logrus.Info("命中缓存")
 		return cache, nil

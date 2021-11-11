@@ -12,7 +12,7 @@ var cache map[string]interface{}
 
 const (
 	routerService = "router-service"
-	eurekaClient = "eureka-client"
+	eurekaClient = "eureka-thirdparty"
 	dbRefKey        = "db"
 )
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/client/member/model"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member/model"
 	"strings"
 )
 

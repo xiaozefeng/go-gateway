@@ -1,6 +1,6 @@
 package util
 
-import "github.com/xiaozefeng/go-gateway/internal/pkg/client/eureka"
+import "github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
 
 func LoadBalance(instances []string) string {
 	if len(instances) > 0 {
