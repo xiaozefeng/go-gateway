@@ -16,15 +16,15 @@ import (
 
 const AppId = "hotel-operation-platform-member"
 
-type Service struct {
+type UserCase struct {
 	cli *eureka.Client
 }
 
-func NewMemberService(cli *eureka.Client) *Service {
-	return &Service{cli: cli}
+func NewUserCase(cli *eureka.Client) *UserCase {
+	return &UserCase{cli: cli}
 }
 
-func (m *Service) GetMember(token, sourceType string) (*model.GetMemberResp, error) {
+func (m *UserCase) GetMember(token, sourceType string) (*model.GetMemberResp, error) {
 	app, err := m.cli.GetApp(AppId)
 	if err != nil {
 		return nil, err

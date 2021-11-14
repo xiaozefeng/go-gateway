@@ -8,7 +8,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util/httputil"
 )
 
-type EurekaServerURL string
+type ServerURL string
 type Client struct {
 	URL string
 }
@@ -35,6 +35,6 @@ func (c *Client) GetApp(appId string) (*GetAppResp, error) {
 	return &res, err
 }
 
-func NewClient(url EurekaServerURL) *Client {
+func NewClient(url ServerURL) *Client {
 	return &Client{URL: string(url)}
 }

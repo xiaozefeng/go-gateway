@@ -83,7 +83,7 @@ func main() {
 }
 
 func initDI() (func(), error) {
-	routerSvc, cleanup, err := InitRouterService(eureka.EurekaServerURL(viper.GetString("eureka_url")), "")
+	routerSvc, cleanup, err := InitRouterService(eureka.ServerURL(viper.GetString("eureka_url")), "")
 	if err != nil {
 		return cleanup, err
 	}

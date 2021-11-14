@@ -17,7 +17,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitRouterService(eurekaServerURL eureka.EurekaServerURL, mysqlConnectURL db.MySQLConnectURL) (*server.RouterService, func(), error) {
+func InitRouterService(eurekaServerURL eureka.ServerURL, mysqlConnectURL db.MySQLConnectURL) (*server.RouterService, func(), error) {
 	sqlDB, cleanup, err := db.New(mysqlConnectURL)
 	if err != nil {
 		return nil, nil, err
@@ -25,7 +25,7 @@ func InitRouterService(eurekaServerURL eureka.EurekaServerURL, mysqlConnectURL d
 	urlRepo := auth.NewURLRepo(sqlDB)
 	client := eureka.NewClient(eurekaServerURL)
 	authUserCase := biz.NewAuthUserCase(urlRepo, client)
-	service := member.NewMemberService(client)
+	service := member.NewUserCase(client)
 	tokenUserCase := biz.NewTokenUserCase(authUserCase, client, service)
 	routerService := server.NewRouterService(authUserCase, tokenUserCase)
 	return routerService, func() {

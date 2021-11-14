@@ -6,5 +6,5 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member"
 )
 
-var ProviderSet = wire.NewSet(NewTokenUserCase, NewAuthUserCase,eureka.NewClient, member.NewMemberService)
+var ProviderSet = wire.NewSet(NewTokenUserCase, NewAuthUserCase,eureka.NewClient, member.NewUserCase)
 

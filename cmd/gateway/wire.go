@@ -12,7 +12,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member"
 )
 
-func InitRouterService(eurekaServerURL eureka.EurekaServerURL, mysqlConnectURL db.MySQLConnectURL) (*server.RouterService,func(), error) {
+func InitRouterService(eurekaServerURL eureka.ServerURL, mysqlConnectURL db.MySQLConnectURL) (*server.RouterService,func(), error) {
 	panic(
 		wire.Build(
 			server.ProviderSet,
@@ -22,7 +22,7 @@ func InitRouterService(eurekaServerURL eureka.EurekaServerURL, mysqlConnectURL d
 			wire.Bind(new(server.AuthService), new(*biz.AuthUserCase)),
 			wire.Bind(new(server.TokenService), new(*biz.TokenUserCase)),
 			wire.Bind(new(biz.AuthRepo), new(*data.URLRepo)),
-			wire.Bind(new(biz.MemberService), new(*member.Service))))
+			wire.Bind(new(biz.MemberService), new(*member.UserCase))))
 }
 
 //func InitDB(url string) (*sql.DB,func(), error) {
