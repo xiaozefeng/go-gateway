@@ -1,6 +1,7 @@
-package web
+package server
 
 import (
+	"github.com/spf13/viper"
 	"net/http"
 	"net/http/httputil"
 
@@ -10,7 +11,11 @@ import (
 
 var routerSvc *RouterService
 
-func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
+func SetRouterService(rs *RouterService) {
+	routerSvc = rs
+}
+
+func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	g.Use(mw...)
 
 	g.Any("/*action", func(c *gin.Context) {
@@ -40,9 +45,15 @@ func InitRouter(g *gin.Engine, mw ...gin.HandlerFunc) {
 		proxy.ServeHTTP(c.Writer, c.Request)
 	})
 
+	return g
 }
 
-func SetRouterService(rs *RouterService) {
-	routerSvc = rs
-}
+func NewHTTPServer(addr string, handlers ...gin.HandlerFunc) *http.Server {
+	gin.SetMode(viper.GetString("runmode"))
+	handler:=InitRouter(gin.New(), handlers...)
 
+	return &http.Server{
+		Addr: addr,
+		Handler: handler,
+	}
+}

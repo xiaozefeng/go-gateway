@@ -6,7 +6,7 @@ build: clean gen
 
 ## gen: generate code
 gen:
-	cd internal/pkg/wire && wire
+	cd cmd/gateway && wire
 
 ## run: build and run config file: `./conf/tk.yaml`
 run: build 

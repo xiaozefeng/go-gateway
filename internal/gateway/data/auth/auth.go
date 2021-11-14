@@ -2,23 +2,26 @@ package auth
 
 import (
 	"database/sql"
+	"github.com/google/wire"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 
 	"github.com/sirupsen/logrus"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
+var ProviderSet = wire.NewSet(NewURLRepo, db.New)
 
-type UrlRepo struct {
+type URLRepo struct {
 	*sql.DB
 }
 
-func NewAuthURLRepo(db *sql.DB) *UrlRepo {
-	return &UrlRepo{db}
+func NewURLRepo(db *sql.DB) *URLRepo {
+	return &URLRepo{db}
 }
 
 var cache []*domain.AuthURL
 
-func (repo *UrlRepo) List() ([]*domain.AuthURL, error) {
+func (repo *URLRepo) List() ([]*domain.AuthURL, error) {
 	if cache != nil {
 		logrus.Info("命中缓存")
 		return cache, nil

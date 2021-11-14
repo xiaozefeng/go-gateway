@@ -3,32 +3,41 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/web"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/web/middleware"
-	"net/http"
+	"github.com/gin-gonic/gin"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/server"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/server/middleware"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
 	"os"
 	"os/signal"
 	"syscall"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/configs"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/logs"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/wire"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-	err := Init()
+	var cfg string
+	flag.StringVar(&cfg, "c", "", "cofing file")
+	flag.Parse()
+
+	err := configs.Initiliaze(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	gin.SetMode(viper.GetString("runmode"))
+	err = logs.Initiliaze(viper.GetString("log.path"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	cleanup, err := initDI()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	engine := gin.New()
 	var handlers []gin.HandlerFunc
 	handlers = append(handlers, gin.Recovery())
 	handlers = append(handlers, middleware.NoCache)
@@ -37,25 +46,20 @@ func main() {
 	handlers = append(handlers, middleware.Login)
 	handlers = append(handlers, gin.Logger())
 
-	web.InitRouter(engine, handlers...)
-
-	server := &http.Server{
-		Addr:    viper.GetString("addr"),
-		Handler: engine,
-	}
+	s := server.NewHTTPServer(viper.GetString("addr"))
 
 	ctx, cancel := context.WithCancel(context.Background())
 	g, errCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		<-errCtx.Done()
-		log.Println("stooping http server")
-		return server.Shutdown(errCtx)
+		log.Println("stooping http s")
+		return s.Shutdown(errCtx)
 	})
 
 	g.Go(func() error {
-		log.Infof("starting http server at address: %s", viper.GetString("addr"))
-		return server.ListenAndServe()
+		log.Infof("starting http s at address: %s", viper.GetString("addr"))
+		return s.ListenAndServe()
 	})
 
 	g.Go(func() error {
@@ -65,10 +69,7 @@ func main() {
 		case sig := <-done:
 			log.Println("sig:", sig)
 			// clean resources
-			err:=wire.GetDB().Close()
-			if err != nil {
-				return err
-			}
+			cleanup()
 			cancel()
 		case <-errCtx.Done():
 			return errCtx.Err()
@@ -81,24 +82,12 @@ func main() {
 	}
 }
 
-func Init() error {
-
-	var cfg string
-	flag.StringVar(&cfg, "c", "", "cofnig file")
-	flag.Parse()
-
-	err := configs.Init(cfg)
+func initDI() (func(), error) {
+	routerSvc, cleanup, err := InitRouterService(eureka.EurekaServerURL(viper.GetString("eureka_url")), "")
 	if err != nil {
-		return err
+		return cleanup, err
 	}
-
-	err = logs.Init(viper.GetString("log.path"))
-	if err != nil {
-		return err
-	}
-	err = wire.InitDI()
-	if err != nil {
-		return err
-	}
-	return nil
+	server.SetRouterService(routerSvc)
+	middleware.SetRouterService(routerSvc)
+	return cleanup, nil
 }

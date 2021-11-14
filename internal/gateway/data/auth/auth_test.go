@@ -20,17 +20,18 @@ func Test_db(t *testing.T) {
 	database := "api_gate"
 	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, passwd, host, port, database)
 
-	db, err := db.Init(url)
+	dbRef,cleanup, err := db.New(db.MySQLConnectURL(url))
 	if err != nil {
 		t.Error(err)
 	}
+	defer cleanup()
 	log.Println("Connected to the MySQL Server")
 	// See "Important settings" section.
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	dbRef.SetConnMaxLifetime(time.Minute * 3)
+	dbRef.SetMaxOpenConns(10)
+	dbRef.SetMaxIdleConns(10)
 
-	rows, err := db.Query("select service_id, url, force_auth, prefix from auth_url")
+	rows, err := dbRef.Query("select service_id, url, force_auth, prefix from auth_url")
 	if err != nil {
 		t.Error(err)
 	}

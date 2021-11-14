@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Init(cfg string) error {
+func Initiliaze(cfg string) error {
 	if cfg != "" {
 		viper.SetConfigFile(cfg)
 	} else {

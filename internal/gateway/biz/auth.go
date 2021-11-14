@@ -19,7 +19,7 @@ type AuthUserCase struct {
 	cli  *eureka.Client
 }
 
-func NewBizUserService(repo AuthRepo, cli *eureka.Client) *AuthUserCase {
+func NewAuthUserCase(repo AuthRepo, cli *eureka.Client) *AuthUserCase {
 	return &AuthUserCase{repo: repo, cli: cli}
 }
 

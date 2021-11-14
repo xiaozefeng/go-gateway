@@ -9,24 +9,21 @@ import (
 	"strings"
 )
 
-type AuthService interface {
-	ListAuthURL() (map[string][]*domain.AuthURL, error)
-}
 type MemberService interface {
 	GetMember(token string, sourceType string) (*model.GetMemberResp, error)
 }
 
-type TokenService struct {
-	bizSvc AuthService
+type TokenUserCase struct {
+	authUc *AuthUserCase
 	cli    *eureka.Client
 	memberSvc MemberService
 }
 
-func NewTokenService(ba AuthService, cli *eureka.Client, memberSvc MemberService) *TokenService {
-	return &TokenService{bizSvc: ba, cli: cli, memberSvc: memberSvc}
+func NewTokenUserCase(authUc *AuthUserCase, cli *eureka.Client, memberSvc MemberService) *TokenUserCase {
+	return &TokenUserCase{authUc: authUc, cli: cli, memberSvc: memberSvc}
 }
 
-func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err error) {
+func (ts *TokenUserCase) CheckToken(token, sourceType string) (memberId int, err error) {
 	if token == "" || token == "null" || token == "undefined" {
 		return -1, fmt.Errorf("invalid token: %s", token)
 	}
@@ -36,8 +33,8 @@ func (ts *TokenService) CheckToken(token, sourceType string) (memberId int, err 
 	}
 	return resp.MemberId, nil
 }
-func (ts *TokenService) IsNeedLogin(path, serviceId string) bool {
-	m, err := ts.bizSvc.ListAuthURL()
+func (ts *TokenUserCase) IsNeedLogin(path, serviceId string) bool {
+	m, err := ts.authUc.ListAuthURL()
 	if err != nil {
 		logrus.Errorf("list auth url happened error: %v", err)
 		return false

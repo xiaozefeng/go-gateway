@@ -10,18 +10,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Init(url string) (*sql.DB, error) {
-	if len(url) == 0 {
+type MySQLConnectURL string
+
+func New(mysqlConnectURL MySQLConnectURL) (*sql.DB, func(), error) {
+	var url string
+	if mysqlConnectURL == "" {
 		user := viper.GetString("db.user")
 		passwd := viper.GetString("db.passwd")
 		host := viper.GetString("db.host")
 		port := viper.GetInt("db.port")
 		database := viper.GetString("db.database")
 		url = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, passwd, host, port, database)
+	} else {
+		url = string(mysqlConnectURL)
 	}
+
 	db, err := getDataSource(url)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	log.Println("Connected to the MySQL Server")
 	// See "Important settings" section.
@@ -29,7 +35,12 @@ func Init(url string) (*sql.DB, error) {
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 	// DB = db
-	return db, err
+	return db, func() {
+		err := db.Close()
+		if err != nil {
+			return
+		}
+	}, err
 }
 
 func getDataSource(url string) (*sql.DB, error) {

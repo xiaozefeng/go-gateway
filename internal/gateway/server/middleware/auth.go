@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/web"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/server"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -16,7 +16,7 @@ var (
 	MID               = "mid"
 )
 
-var routerSvc *web.RouterService
+var routerSvc *server.RouterService
 
 func Login(c *gin.Context) {
 	path := c.Request.URL.Path
@@ -49,6 +49,6 @@ func setHeader(c *gin.Context, memberId int, sourceType string) {
 	h.Set(SourceType, sourceType)
 }
 
-func SetRouterService(rs *web.RouterService) {
+func SetRouterService(rs *server.RouterService) {
 	routerSvc = rs
 }

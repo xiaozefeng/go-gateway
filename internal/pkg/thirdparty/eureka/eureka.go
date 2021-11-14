@@ -8,6 +8,7 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util/httputil"
 )
 
+type EurekaServerURL string
 type Client struct {
 	URL string
 }
@@ -20,11 +21,11 @@ func (c *Client) GetApps() (*GetAppsResp, error) {
 	return &res, err
 }
 
-func (c *Client) GetApp(appid string) (*GetAppResp, error) {
-	if len(appid) == 0 {
-		return nil, errors.New("appid must not null")
+func (c *Client) GetApp(appId string) (*GetAppResp, error) {
+	if len(appId) == 0 {
+		return nil, errors.New("appId must not null")
 	}
-	url := c.URL + "/apps/" + strings.ToUpper(appid)
+	url := c.URL + "/apps/" + strings.ToUpper(appId)
 	b, err := httputil.Get(url, nil)
 	if err != nil {
 		return nil, err
@@ -34,6 +35,6 @@ func (c *Client) GetApp(appid string) (*GetAppResp, error) {
 	return &res, err
 }
 
-func NewClient(url string) *Client {
-	return &Client{URL: url}
+func NewClient(url EurekaServerURL) *Client {
+	return &Client{URL: string(url)}
 }
