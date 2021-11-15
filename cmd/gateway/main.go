@@ -39,14 +39,9 @@ func main() {
 	}
 
 	var handlers []gin.HandlerFunc
-	handlers = append(handlers, gin.Recovery())
-	handlers = append(handlers, middleware.NoCache)
-	handlers = append(handlers, middleware.Options)
-	handlers = append(handlers, middleware.Secure)
 	handlers = append(handlers, middleware.Login)
-	handlers = append(handlers, gin.Logger())
 
-	s := server.NewHTTPServer(viper.GetString("addr"), handlers...)
+	s := server.NewHTTPServer(viper.GetString("addr"))
 
 	ctx, cancel := context.WithCancel(context.Background())
 	g, errCtx := errgroup.WithContext(ctx)
