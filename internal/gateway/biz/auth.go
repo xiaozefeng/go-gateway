@@ -1,13 +1,13 @@
 package biz
 
 import (
+	"github.com/xiaozefeng/go-gateway/internal/pkg/util/mapping"
 	"net/url"
 	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
 
 type AuthRepo interface {
@@ -52,7 +52,7 @@ func findTarget(cli *eureka.Client, serviceId string) string {
 		logrus.Errorf("get service id failed, err: %v", err)
 		return ""
 	}
-	return util.LoadBalance(util.MapToString(app.App.Instance, func(instance eureka.Instance) string {
+	return loadBalance(mapping.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		if instance.HomePageUrl != "" {
 			u, _ := url.Parse(instance.HomePageUrl)
 			return u.Host
@@ -60,6 +60,14 @@ func findTarget(cli *eureka.Client, serviceId string) string {
 		return ""
 	}))
 }
+
+func loadBalance(instances []string) string {
+	if len(instances) > 0 {
+		return instances[0]
+	}
+	return ""
+}
+
 
 func detectService(path string) string {
 	if path == "" {

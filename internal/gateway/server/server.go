@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/spf13/viper"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/server/middleware"
 	"net/http"
 	"net/http/httputil"
 
@@ -20,9 +19,6 @@ func newHandler(mw...gin.HandlerFunc) *gin.Engine {
 	g := gin.New()
 	var handlers []gin.HandlerFunc
 	handlers = append(handlers, gin.Recovery())
-	handlers = append(handlers, middleware.NoCache)
-	handlers = append(handlers, middleware.Options)
-	handlers = append(handlers, middleware.Secure)
 	handlers = append(handlers, gin.Logger())
 	handlers = append(handlers, mw...)
 
@@ -60,7 +56,7 @@ func newHandler(mw...gin.HandlerFunc) *gin.Engine {
 
 func NewHTTPServer(addr string, handlers ...gin.HandlerFunc) *http.Server {
 	gin.SetMode(viper.GetString("runmode"))
-	handler := newHandler()
+	handler := newHandler(handlers...)
 	return &http.Server{
 		Addr:    addr,
 		Handler: handler,

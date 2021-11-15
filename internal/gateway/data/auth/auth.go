@@ -3,6 +3,7 @@ package auth
 import (
 	"database/sql"
 	"github.com/google/wire"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 
 	"github.com/sirupsen/logrus"
@@ -15,7 +16,7 @@ type URLRepo struct {
 	*sql.DB
 }
 
-func NewURLRepo(db *sql.DB) *URLRepo {
+func NewURLRepo(db *sql.DB) biz.AuthRepo {
 	return &URLRepo{db}
 }
 

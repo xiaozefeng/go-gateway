@@ -22,10 +22,10 @@ var ProviderSet = wire.NewSet(NewRouterService)
 type RouterService struct {
 	//AuthService
 	//TokenService
-	biz.AuthUserCase
-	biz.TokenUserCase
+	*biz.AuthUserCase
+	*biz.TokenUserCase
 }
 
-func NewRouterService(authUserCase biz.AuthUserCase, tokenUserCase biz.TokenUserCase) *RouterService {
+func NewRouterService(authUserCase *biz.AuthUserCase, tokenUserCase *biz.TokenUserCase) *RouterService {
 	return &RouterService{ authUserCase, tokenUserCase}
 }

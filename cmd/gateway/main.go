@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/gin-gonic/gin"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/server"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/server/middleware"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
@@ -38,10 +37,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var handlers []gin.HandlerFunc
-	handlers = append(handlers, middleware.Login)
-
-	s := server.NewHTTPServer(viper.GetString("addr"))
+	s := server.NewHTTPServer(viper.GetString("addr"), middleware.Login,
+		middleware.NoCache,
+		middleware.Options,
+		middleware.Secure)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	g, errCtx := errgroup.WithContext(ctx)

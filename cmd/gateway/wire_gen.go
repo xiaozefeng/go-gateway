@@ -22,11 +22,11 @@ func InitRouterService(eurekaServerURL eureka.ServerURL, mysqlConnectURL db.MySQ
 	if err != nil {
 		return nil, nil, err
 	}
-	urlRepo := auth.NewURLRepo(sqlDB)
+	authRepo := auth.NewURLRepo(sqlDB)
 	client := eureka.NewClient(eurekaServerURL)
-	authUserCase := biz.NewAuthUserCase(urlRepo, client)
-	service := member.NewUserCase(client)
-	tokenUserCase := biz.NewTokenUserCase(authUserCase, client, service)
+	authUserCase := biz.NewAuthUserCase(authRepo, client)
+	memberService := member.NewUserCase(client)
+	tokenUserCase := biz.NewTokenUserCase(authUserCase, client, memberService)
 	routerService := server.NewRouterService(authUserCase, tokenUserCase)
 	return routerService, func() {
 		cleanup()

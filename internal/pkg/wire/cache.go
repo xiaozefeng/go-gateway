@@ -7,7 +7,7 @@ package wire
 //	"github.com/spf13/viper"
 //)
 //
-//var cache map[string]interface{}
+//var cache mapping[string]interface{}
 //
 //const (
 //	routerService = "router-service"
@@ -17,7 +17,7 @@ package wire
 //
 //func InitDI() error {
 //	eurekaURL := viper.GetString("eureka_url")
-//	cache = make(map[string]interface{})
+//	cache = make(mapping[string]interface{})
 //	//dbRef, err := InitDB("")
 //	//if err != nil {
 //	//	return err

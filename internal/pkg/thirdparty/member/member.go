@@ -3,6 +3,9 @@ package member
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/google/wire"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/util/mapping"
 	"io"
 	"net/http"
 
@@ -11,25 +14,25 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member/decode"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member/model"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/util"
 )
+var ProviderSet = wire.NewSet(NewUserCase)
 
-const AppId = "hotel-operation-platform-member"
+const appId = "hotel-operation-platform-member"
 
 type UserCase struct {
 	cli *eureka.Client
 }
 
-func NewUserCase(cli *eureka.Client) *UserCase {
+func NewUserCase(cli *eureka.Client) biz.MemberService {
 	return &UserCase{cli: cli}
 }
 
 func (m *UserCase) GetMember(token, sourceType string) (*model.GetMemberResp, error) {
-	app, err := m.cli.GetApp(AppId)
+	app, err := m.cli.GetApp(appId)
 	if err != nil {
 		return nil, err
 	}
-	chosen := util.LoadBalance(util.MapToString(app.App.Instance, func(instance eureka.Instance) string {
+	chosen := loadBalance(mapping.MapToString(app.App.Instance, func(instance eureka.Instance) string {
 		return instance.HomePageUrl
 	}))
 	var getMemberReq = model.GetMemberReq{
@@ -53,4 +56,11 @@ func (m *UserCase) GetMember(token, sourceType string) (*model.GetMemberResp, er
 		return nil, err
 	}
 	return &r, nil
+}
+
+func loadBalance(instances []string) string {
+	if len(instances) > 0 {
+		return instances[0]
+	}
+	return ""
 }

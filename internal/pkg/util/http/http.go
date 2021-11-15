@@ -1,4 +1,4 @@
-package httputil
+package http
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ func Post(url string, body []byte, header map[string]string) ([]byte, error) {
 
 func request(url, method string, body []byte, header map[string]string) ([]byte, error) {
 	var bodyReader io.Reader
-	if body != nil{
+	if body != nil {
 		bodyReader = bytes.NewReader(body)
 	}
 	req, err := http.NewRequest(method, url, bodyReader)
