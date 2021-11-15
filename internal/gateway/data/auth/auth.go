@@ -2,15 +2,11 @@ package auth
 
 import (
 	"database/sql"
-	"github.com/google/wire"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
-	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
-
 	"github.com/sirupsen/logrus"
+	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz/domain"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/schema"
 )
-var ProviderSet = wire.NewSet(NewURLRepo, db.New)
 
 type URLRepo struct {
 	*sql.DB
