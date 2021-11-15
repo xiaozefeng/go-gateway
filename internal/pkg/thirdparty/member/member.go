@@ -3,7 +3,6 @@ package member
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/google/wire"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/biz"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/util/mapping"
 	"io"
@@ -15,7 +14,6 @@ import (
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member/decode"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member/model"
 )
-var ProviderSet = wire.NewSet(NewUserCase)
 
 const appId = "hotel-operation-platform-member"
 

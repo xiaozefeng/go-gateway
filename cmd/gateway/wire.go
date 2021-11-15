@@ -9,8 +9,8 @@ import (
 	data "github.com/xiaozefeng/go-gateway/internal/gateway/data/auth"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/data/db"
 	"github.com/xiaozefeng/go-gateway/internal/gateway/server"
+	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty"
 	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/eureka"
-	"github.com/xiaozefeng/go-gateway/internal/pkg/thirdparty/member"
 )
 
 func InitRouterService(eurekaServerURL eureka.ServerURL, mysqlConnectURL db.MySQLConnectURL) (*server.RouterService, func(), error) {
@@ -18,8 +18,9 @@ func InitRouterService(eurekaServerURL eureka.ServerURL, mysqlConnectURL db.MySQ
 		wire.Build(
 			server.ProviderSet,
 			biz.ProviderSet,
-			member.ProviderSet,
-			data.ProviderSet))
+			data.ProviderSet,
+			thirdparty.ProviderSet,
+			))
 }
 
 //func InitDB(url string) (*sql.DB,func(), error) {
