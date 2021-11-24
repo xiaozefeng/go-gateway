@@ -20,7 +20,7 @@ import (
 
 func main() {
 	var cfg string
-	flag.StringVar(&cfg, "c", "", "cofing file")
+	flag.StringVar(&cfg, "c", "", "config file path")
 	flag.Parse()
 
 	err := configs.Initiliaze(cfg)
