@@ -2,7 +2,7 @@
 
 ## build: clean and generate code and build
 build: clean gen
-	cd cmd/gateway && go build -v .
+	cd cmd/gateway && go build -tags=nomsgpack  -v .
 
 ## gen: generate code
 gen:
