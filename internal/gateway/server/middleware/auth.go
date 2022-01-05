@@ -29,14 +29,9 @@ func Login(c *gin.Context) {
 	log.Infof("memberId: %v", memberId)
 
 	var needLogin = routerSvc.IsNeedLogin(path, serviceId)
-	if needLogin {
-		if err != nil {
+	if needLogin && (memberId == -1 || err != nil ) {
 			log.Errorf("check token happened err: %v", err)
 			c.AbortWithStatusJSON(http.StatusOK, gin.H{"resultCode": 440, "resultMsg": "鉴权失败", "data": nil})
-		} else {
-			setHeader(c, memberId, sourceType)
-			c.Next()
-		}
 	} else {
 		setHeader(c, memberId, sourceType)
 		c.Next()
